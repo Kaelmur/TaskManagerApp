@@ -18,7 +18,7 @@ export interface UserContextType {
 
 export const UserContext = createContext<UserContextType>({
   user: null,
-  loading: false,
+  loading: true,
   updateUser: () => {},
   clearUser: () => {},
 });

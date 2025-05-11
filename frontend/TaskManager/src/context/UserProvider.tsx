@@ -9,13 +9,15 @@ interface UserProviderProps {
 
 const UserProvider: FC<UserProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     if (user) return;
 
     const accessToken = localStorage.getItem("token");
+
     if (!accessToken) {
+      clearUser();
       setLoading(false);
       return;
     }

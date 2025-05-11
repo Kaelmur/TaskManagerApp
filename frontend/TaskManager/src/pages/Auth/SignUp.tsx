@@ -1,9 +1,14 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import AuthLayout from "../../components/AuthLayout";
 import { validateEmail } from "../../utils/helper";
 import ProfilePhotoSelector from "../../components/Inputs/ProfilePhotoSelector";
 import Input from "../../components/Inputs/Input";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import axiosInstance from "../../utils/axiosInstance";
+import { AxiosError } from "axios";
+import { API_PATHS } from "../../utils/apiPath";
+import { UserContext } from "../../context/userContext";
+import uploadImage from "../../utils/uploadImage";
 
 function SignUp() {
   const [profilePic, setProfilePic] = useState(null);
@@ -14,10 +19,16 @@ function SignUp() {
 
   const [error, setError] = useState<string | null>(null);
 
+  const navigate = useNavigate();
+
+  const { updateUser } = useContext(UserContext);
+
   const handleSignUp = async (
     e: React.FormEvent<HTMLFormElement>
   ): Promise<void> => {
     e.preventDefault();
+
+    let profileImageUrl = "";
 
     if (!fullName) {
       setError("Please enter full name.");
@@ -38,8 +49,39 @@ function SignUp() {
 
     // SignUp API Call
     try {
-    } catch (error) {
-      console.error("SignUp error:", error);
+      // Upload image if present
+      if (profilePic) {
+        const imgUploadRes = await uploadImage(profilePic);
+        profileImageUrl = imgUploadRes.data.imageUrl || "";
+      }
+      const response = await axiosInstance.post(API_PATHS.AUTH.REGISTER, {
+        name: fullName,
+        email,
+        password,
+        profileImageUrl,
+        adminInviteToken,
+      });
+
+      const { token, role } = response.data;
+
+      if (token) {
+        localStorage.setItem("token", token);
+        updateUser(response.data);
+
+        // Redirect based on role
+        if (role === "admin") {
+          navigate("/admin/dashboard");
+        } else {
+          navigate("/user/dashboard");
+        }
+      }
+    } catch (err) {
+      const error = err as AxiosError<{ message: string }>;
+      if (error.response && error.response.data.message) {
+        setError(error.response.data.message || "SignUp failed");
+      } else {
+        setError("Something went wrong. Please try again.");
+      }
     }
   };
 
