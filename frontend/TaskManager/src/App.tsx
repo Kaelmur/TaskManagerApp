@@ -18,6 +18,7 @@ import PrivateRoute from "./routes/PrivateRoute";
 import UserProvider from "./context/UserProvider";
 import { useContext } from "react";
 import { UserContext } from "./context/userContext";
+import { Toaster } from "react-hot-toast";
 
 function App() {
   return (
@@ -51,6 +52,15 @@ function App() {
           </Routes>
         </Router>
       </div>
+
+      <Toaster
+        toastOptions={{
+          className: "",
+          style: {
+            fontSize: "13px",
+          },
+        }}
+      />
     </UserProvider>
   );
 }

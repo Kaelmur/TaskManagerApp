@@ -2,7 +2,7 @@ import { useState } from "react";
 import { HiOutlineMenu, HiOutlineX } from "react-icons/hi";
 import SideMenu from "./SideMenu";
 
-function Navbar({ activeMenu }) {
+function Navbar({ activeMenu }: { activeMenu: string }) {
   const [openSideMenu, setOpenSideMenu] = useState(false);
 
   return (
