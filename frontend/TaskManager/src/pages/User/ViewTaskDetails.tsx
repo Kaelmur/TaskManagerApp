@@ -6,6 +6,8 @@ import DashboardLayout from "../../components/DashboardLayout";
 import moment from "moment";
 import AvatarGroup from "../../components/AvatarGroup";
 import { LuSquareArrowOutUpRight } from "react-icons/lu";
+import AttachmentsFileUpload from "../../components/Inputs/AttachmentsFileUpload";
+import Spinner from "../../components/Spinner";
 
 function ViewTaskDetails() {
   const { id } = useParams();
@@ -68,9 +70,6 @@ function ViewTaskDetails() {
 
   // Handle attachment link click
   const handleLinkClick = (link) => {
-    if (!/^https:?\/\//i.test(link)) {
-      link = "https://" + link; // Default to HTTPS
-    }
     window.open(link, "_blank");
   };
 
@@ -80,6 +79,8 @@ function ViewTaskDetails() {
     }
     return () => {};
   }, [id]);
+
+  if (!task) return <Spinner />;
 
   return (
     <DashboardLayout activeMenu="My Tasks">
@@ -149,7 +150,25 @@ function ViewTaskDetails() {
                 ))}
               </div>
 
-              {task?.attachments?.length > 0 && (
+              <AttachmentsFileUpload taskId={id} setTask={setTask} />
+
+              {task.attachments?.length > 0 && (
+                <div className="mt-6">
+                  <label className="text-xs font-medium text-slate-500">
+                    Attachments
+                  </label>
+                  {task.attachments.map((link, index) => (
+                    <Attachment
+                      key={index}
+                      link={link}
+                      index={index}
+                      onClick={() => handleLinkClick(link.url)}
+                    />
+                  ))}
+                </div>
+              )}
+
+              {/* {task?.attachments?.length > 0 && (
                 <div className="mt-2">
                   <label className="text-xs font-medium text-slate-500">
                     Attachments
@@ -163,7 +182,7 @@ function ViewTaskDetails() {
                     />
                   ))}
                 </div>
-              )}
+              )} */}
             </div>
           </div>
         )}
@@ -202,6 +221,25 @@ const TodoCheckList = ({ text, isChecked, onChange }) => {
   );
 };
 
+// const Attachment = ({ link, index, onClick }) => {
+//   return (
+//     <div
+//       className="flex justify-between bg-gray-50 border border-gray-100 px-3 py-2 rounded-md mb-3 mt-2 cursor-pointer"
+//       onClick={onClick}
+//     >
+//       <div className="flex-1 flex items-center gap-3">
+//         <span className="text-xs text-gray-400 font-semibold mr-2">
+//           {index < 9 ? `0${index + 1}` : index + 1}
+//         </span>
+
+//         <p className="text-xs text-black">{link}</p>
+//       </div>
+
+//       <LuSquareArrowOutUpRight className="text-gray-400" />
+//     </div>
+//   );
+// };
+
 const Attachment = ({ link, index, onClick }) => {
   return (
     <div
@@ -212,10 +250,10 @@ const Attachment = ({ link, index, onClick }) => {
         <span className="text-xs text-gray-400 font-semibold mr-2">
           {index < 9 ? `0${index + 1}` : index + 1}
         </span>
-
-        <p className="text-xs text-black">{link}</p>
+        <p className="text-xs text-black truncate max-w-[180px]">
+          {link.url.split("/").pop()}
+        </p>
       </div>
-
       <LuSquareArrowOutUpRight className="text-gray-400" />
     </div>
   );
