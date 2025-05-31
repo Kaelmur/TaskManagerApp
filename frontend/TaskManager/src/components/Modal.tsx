@@ -8,7 +8,7 @@ type ModalProps = {
 };
 
 const Modal: React.FC<ModalProps> = ({ children, isOpen, onClose, title }) => {
-  if (!isOpen) return;
+  if (!isOpen) return null;
   return (
     <div className="fixed top-0 right-0 left-0 z-50 flex justify-center items-center w-full h-[calc(100%-1rem)] max-h-full overflow-y-auto overflow-x-hidden bg-black/20 bg-opacity-50">
       <div className="relative p-4 w-full max-w-2xl max-h-full">

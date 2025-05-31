@@ -28,6 +28,14 @@ export const API_PATHS = {
     UPDATE_TODO_CHECKLIST: (taskId: string) => `/api/tasks/${taskId}/todo`, // Update todo checklist
   },
 
+  PLANS: {
+    GET_ALL_PLANS: "/api/plans", // Get all plans
+    CREATE_PLAN: "/api/plans", // Create a new plan
+    GET_PLAN_BY_ID: (planId: string) => `/api/plans/${planId}`, // Get plan by ID
+    UPDATE_PLAN: (planId: string) => `/api/plans/${planId}`, // Update plan details
+    DELETE_PLAN: (planId: string) => `/api/plans/${planId}`, // Delete a plan
+  },
+
   REPORTS: {
     EXPORT_TASKS: "/api/reports/export/tasks", // Download all tasks as an Excel file
     EXPORT_USERS: "/api/reports/export/users", // Download user-task report

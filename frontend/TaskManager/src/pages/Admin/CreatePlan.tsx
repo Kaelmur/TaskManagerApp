@@ -14,79 +14,66 @@ import AddAttachmentsInput from "../../components/Inputs/AddAttachmentsInput";
 import Modal from "../../components/Modal";
 import DeleteAlert from "../../components/DeleteAlert";
 
-type TodoChecklistItem = {
-  text: string;
-  completed: boolean;
-};
-
-type TaskData = {
-  title: string;
-  description: string;
-  priority: "Low" | "Medium" | "High";
-  dueDate: Date | null | string;
+type PlanData = {
+  name: string;
+  goal: number;
+  startDate: Date | null | string;
+  endDate: Date | null | string;
+  tasks: string[];
   assignedTo: string[];
-  todoChecklist: TodoChecklistItem[];
-  attachments: File[];
 };
 
-function CreateTask() {
+function CreatePlan() {
   const location = useLocation();
-  const { taskId } = location.state || {};
+  const { planId } = location.state || {};
   const navigate = useNavigate();
 
-  const [taskData, setTaskData] = useState<TaskData>({
-    title: "",
-    description: "",
-    priority: "Low",
-    dueDate: null,
+  const [planData, setPlanData] = useState<PlanData>({
+    name: "",
+    goal: 0,
+    startDate: null,
+    endDate: null,
+    tasks: [],
     assignedTo: [],
-    todoChecklist: [],
-    attachments: [],
   });
-
-  const [currentTask, setCurrentTask] = useState(null);
 
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
   const [openDeleteAlert, setOpenDeleteAlert] = useState(false);
 
-  const handleValueChange = <K extends keyof TaskData>(
+  const handleValueChange = <K extends keyof PlanData>(
     key: K,
-    value: TaskData[K]
+    value: PlanData[K]
   ) => {
-    setTaskData((prevData) => ({ ...prevData, [key]: value }));
+    setPlanData((prevData) => ({ ...prevData, [key]: value }));
   };
 
   const clearData = () => {
     // resetForm
-    setTaskData({
-      title: "",
-      description: "",
-      priority: "Low",
-      dueDate: null,
+    setPlanData({
+      name: "",
+      goal: 0,
+      startDate: null,
+      endDate: null,
+      tasks: [],
       assignedTo: [],
-      todoChecklist: [],
-      attachments: [],
     });
   };
 
-  // Create Task
-  const createTask = async () => {
+  // Create Plan
+  const createPlan = async () => {
     setLoading(true);
 
     try {
-      const todoList = taskData.todoChecklist?.map((item) => ({
-        text: item,
-        completed: false,
-      }));
-
-      const response = await axiosInstance.post(API_PATHS.TASKS.CREATE_TASK, {
-        ...taskData,
-        dueDate: taskData.dueDate
-          ? new Date(taskData.dueDate).toISOString()
+      const response = await axiosInstance.post(API_PATHS.PLANS.CREATE_PLAN, {
+        ...planData,
+        startDate: planData.startDate
+          ? new Date(planData.startDate).toISOString()
           : null,
-        todoChecklist: todoList,
+        endDate: planData.endDate
+          ? new Date(planData.endDate).toISOString()
+          : null,
       });
 
       toast.success("Task Created Successfully");
@@ -101,26 +88,16 @@ function CreateTask() {
   };
 
   // Update Task
-  const updateTask = async () => {
+  const updatePlan = async () => {
     setLoading(true);
 
     try {
-      const todoList = taskData.todoChecklist?.map((item) => {
-        const prevTodoChecklist = currentTask?.todoChecklist || [];
-        const matchedTask = prevTodoChecklist.find((task) => task.text == item);
-
-        return {
-          text: item,
-          completed: matchedTask ? matchedTask.completed : false,
-        };
-      });
-
       const response = await axiosInstance.put(
-        API_PATHS.TASKS.UPDATE_TASK(taskId),
+        API_PATHS.PLANS.UPDATE_PLAN(planId),
         {
-          ...taskData,
-          dueDate: new Date(taskData.dueDate).toISOString(),
-          todoChecklist: todoList,
+          ...planData,
+          startDate: new Date(planData.startDate).toISOString(),
+          endDate: new Date(planData.endDate).toISOString(),
         }
       );
 
@@ -137,100 +114,100 @@ function CreateTask() {
     setError("");
 
     // Input validation
-    if (!taskData.title.trim()) {
-      setError("Title is required.");
+    if (!planData.name.trim()) {
+      setError("Name is required.");
       return;
     }
-    if (!taskData.description.trim()) {
-      setError("Description is required.");
+    if (!planData.goal) {
+      setError("Goal is required.");
       return;
     }
-    if (!taskData.dueDate) {
-      setError("Due Date is required.");
+    if (!planData.startDate) {
+      setError("Start Date is required.");
       return;
     }
 
-    if (taskData.assignedTo?.length === 0) {
+    if (!planData.endDate) {
+      setError("End Date is required.");
+      return;
+    }
+
+    if (planData.assignedTo?.length === 0) {
       setError("Task not assigned to any member.");
       return;
     }
 
-    if (taskData.todoChecklist?.length === 0) {
-      setError("Add atleast one todo task");
+    if (planId) {
+      updatePlan();
       return;
     }
 
-    if (taskId) {
-      updateTask();
-      return;
-    }
-
-    createTask();
+    createPlan();
+    navigate("/admin/plans");
   };
 
-  // get Task by ID
-  const getTaskDetailsByID = async () => {
+  // get Plan by ID
+  const getPlanDetailsByID = async () => {
     try {
       const response = await axiosInstance.get(
-        API_PATHS.TASKS.GET_TASK_BY_ID(taskId)
+        API_PATHS.PLANS.GET_PLAN_BY_ID(planId)
       );
 
       if (response.data) {
-        const taskInfo = response.data;
-        setCurrentTask(taskInfo);
+        const planInfo = response.data;
 
-        setTaskData((prevState) => ({
-          title: taskInfo.title,
-          description: taskInfo.description,
-          priority: taskInfo.priority,
-          dueDate: taskInfo.dueDate
-            ? moment(taskInfo.dueDate).format("YYYY-MM-DD")
+        setPlanData((prevState) => ({
+          name: planInfo.name,
+          goal: planInfo.goal,
+          startDate: planInfo.startDate
+            ? moment(planInfo.startDate).format("YYYY-MM-DD")
             : null,
-          assignedTo: taskInfo?.assignedTo?.map((item) => item?._id) || [],
-          todoChecklist:
-            taskInfo?.todoChecklist?.map((item) => item?.text) || [],
-          attachments: taskInfo?.attachments || [],
+          endDate: planInfo.endDate
+            ? moment(planInfo.endDate).format("YYYY-MM-DD")
+            : null,
+          assignedTo: planInfo?.assignedTo?.map((item) => item?._id) || [],
+          tasks: planInfo?.tasks || [],
         }));
       }
     } catch (error) {
-      console.error("Error fetching task details:", error);
+      console.error("Error fetching plan details:", error);
     }
   };
 
   // Delete Task
-  const deleteTask = async () => {
+  const deletePlan = async () => {
     try {
-      await axiosInstance.delete(API_PATHS.TASKS.DELETE_TASK(taskId));
+      await axiosInstance.delete(API_PATHS.PLANS.DELETE_PLAN(planId));
 
       setOpenDeleteAlert(false);
-      toast.success("Expense details deleted successfully");
-      navigate("/admin/tasks");
+      toast.success("Plan deleted successfully");
+      navigate("/admin/plans");
     } catch (error) {
       console.error(
-        "Error deleting expenses",
+        "Error deleting Plan",
         error.response?.data?.message || error.message
       );
     }
   };
 
   useEffect(() => {
-    if (taskId) {
-      getTaskDetailsByID();
+    if (planId) {
+      getPlanDetailsByID();
     }
     return () => {};
-  }, [taskId]);
+  }, [planId]);
 
   return (
-    <DashboardLayout activeMenu="Create Task">
+    <DashboardLayout activeMenu="Plans">
       <div className="mt-5">
         <div className="grid grid-cols-1 md:grid-cols-4 mt-4">
           <div className="form-card col-span-3">
             <div className="flex items-center justify-between">
               <h2 className="text-xl md:text-xl font-medium">
-                {taskId ? "Update Task" : "Create Task"}
+                {planId ? "Update Plan" : "Create Plan"}
               </h2>
 
-              {taskId && (
+              {planId && (
                 <button
                   className="flex items-center gap-1.5 text-[13px] font-medium text-rose-500 bg-rose-50 rounded px-2 py-1 border border-rose-100 hover:border-rose-300 cursor-pointer"
                   onClick={() => setOpenDeleteAlert(true)}
@@ -242,31 +219,29 @@ function CreateTask() {
 
             <div className="mt-4">
               <label className="text-xs font-medium text-slate-600">
-                Task Title
+                Plan Name
               </label>
 
               <input
-                placeholder="Create App UI"
+                placeholder="Create new website"
                 className="form-input"
-                value={taskData.title}
+                value={planData.name}
                 onChange={({ target }) =>
-                  handleValueChange("title", target.value)
+                  handleValueChange("name", target.value)
                 }
               />
             </div>
 
             <div className="mt-3">
-              <label className="text-xs font-medium text-slate-600">
-                Description
-              </label>
+              <label className="text-xs font-medium text-slate-600">Goal</label>
 
-              <textarea
-                placeholder="Describe task"
+              <input
+                type="number"
+                placeholder="1000"
                 className="form-input"
-                rows={4}
-                value={taskData.description}
+                value={planData.goal === 0 ? "" : planData.goal}
                 onChange={({ target }) =>
-                  handleValueChange("description", target.value)
+                  handleValueChange("goal", Number(target.value))
                 }
               />
             </div>
@@ -274,30 +249,29 @@ function CreateTask() {
             <div className="grid grid-cols-12 gap-4 mt-2">
               <div className="col-span-6 md:col-span-4">
                 <label className="text-xs font-medium text-slate-600">
-                  Priority
+                  Start Date
                 </label>
 
-                <SelectDropdown
-                  options={PRIORITY_DATA}
-                  value={taskData.priority}
-                  onChange={(value: TaskData["priority"]) =>
-                    handleValueChange("priority", value)
+                <input
+                  className="form-input"
+                  value={planData.startDate ? String(planData.startDate) : ""}
+                  onChange={({ target }) =>
+                    handleValueChange("startDate", target.value)
                   }
-                  placeholder="Select Priority"
+                  type="date"
                 />
               </div>
 
               <div className="col-span-6 md:col-span-4">
                 <label className="text-xs font-medium text-slate-600">
-                  Due Date
+                  End Date
                 </label>
 
                 <input
-                  placeholder="Create App UI"
                   className="form-input"
-                  value={taskData.dueDate ? String(taskData.dueDate) : ""}
+                  value={planData.endDate ? String(planData.endDate) : ""}
                   onChange={({ target }) =>
-                    handleValueChange("dueDate", target.value)
+                    handleValueChange("endDate", target.value)
                   }
                   type="date"
                 />
@@ -309,28 +283,15 @@ function CreateTask() {
                 </label>
 
                 <SelectUsers
-                  selectedUsers={taskData.assignedTo}
+                  selectedUsers={planData.assignedTo}
                   setSelectedUsers={(value) =>
                     handleValueChange(
                       "assignedTo",
-                      value as TaskData["assignedTo"]
+                      value as PlanData["assignedTo"]
                     )
                   }
                 />
               </div>
-            </div>
-
-            <div className="mt-3">
-              <label className="text-xs font-medium text-slate-600">
-                TODO Checklist
-              </label>
-
-              <TodoListInput
-                todoList={taskData?.todoChecklist}
-                setTodoList={(value: TodoChecklistItem[]) =>
-                  handleValueChange("todoChecklist", value)
-                }
-              />
             </div>
 
             {error && (
@@ -343,7 +304,7 @@ function CreateTask() {
                 onClick={handleSubmit}
                 disabled={loading}
               >
-                {taskId ? "UPDATE TASK" : "CREATE TASK"}
+                {planId ? "UPDATE PLAN" : "CREATE PLAN"}
               </button>
             </div>
           </div>
@@ -353,15 +314,15 @@ function CreateTask() {
       <Modal
         isOpen={openDeleteAlert}
         onClose={() => setOpenDeleteAlert(false)}
-        title="Delete Task"
+        title="Delete Plan"
       >
         <DeleteAlert
-          content="Are you sure you want to delete this task?"
-          onDelete={() => deleteTask()}
+          content="Are you sure you want to delete this plan?"
+          onDelete={() => deletePlan()}
         />
       </Modal>
     </DashboardLayout>
   );
 }
 
-export default CreateTask;
+export default CreatePlan;

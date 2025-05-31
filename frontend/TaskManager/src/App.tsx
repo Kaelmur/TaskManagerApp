@@ -19,6 +19,8 @@ import UserProvider from "./context/UserProvider";
 import { useContext } from "react";
 import { UserContext } from "./context/userContext";
 import { Toaster } from "react-hot-toast";
+import ManagePlans from "./pages/Admin/ManagePlans";
+import CreatePlan from "./pages/Admin/CreatePlan";
 
 function App() {
   return (
@@ -28,17 +30,23 @@ function App() {
           <Routes>
             <Route path="/login" element={<Login />} />
             <Route path="/signUp" element={<SignUp />} />
+            <Route
+              path="/unauthorized"
+              element={<div>Unauthorized Access</div>}
+            />
 
             {/* Admin Routes */}
             <Route element={<PrivateRoute allowedRoles={["admin"]} />}>
               <Route path="/admin/dashboard" element={<Dashboard />} />
               <Route path="/admin/tasks" element={<ManageTasks />} />
               <Route path="/admin/create-task" element={<CreateTask />} />
+              <Route path="/admin/create-plan" element={<CreatePlan />} />
               <Route path="/admin/users" element={<ManageUsers />} />
+              <Route path="/admin/plans" element={<ManagePlans />} />
             </Route>
 
             {/* User Routes */}
-            <Route element={<PrivateRoute allowedRoles={["admin"]} />}>
+            <Route element={<PrivateRoute allowedRoles={["member"]} />}>
               <Route path="/user/dashboard" element={<UserDashboard />} />
               <Route path="/user/tasks" element={<MyTasks />} />
               <Route
