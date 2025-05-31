@@ -7,6 +7,7 @@ import authRoutes from "./src/routes/authRoutes";
 import userRoutes from "./src/routes/userRoutes";
 import taskRoutes from "./src/routes/taskRoutes";
 import reportRoutes from "./src/routes/reportRoutes";
+import plansRoutes from "./src/routes/planRoutes";
 import { errorHandler } from "./src/middlewares/errorMiddleware";
 
 dotenv.config();
@@ -39,6 +40,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/tasks", taskRoutes);
 app.use("/api/reports", reportRoutes);
+app.use("/api/plans", plansRoutes);
 
 // Serve uploads folder
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));

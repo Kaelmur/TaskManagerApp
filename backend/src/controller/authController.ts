@@ -10,6 +10,7 @@ interface RegisterUserRequestBody {
   profileImageUrl?: string;
   adminInviteToken?: string;
 }
+
 // Generate JWT Token
 const generateToken = (userId: string) => {
   return jwt.sign({ id: userId }, process.env.JWT_SECRET!, { expiresIn: "7d" });
@@ -82,14 +83,19 @@ export const loginUser = async (
     const { email, password } = req.body;
 
     const user = await User.findOne({ email });
-    if (!user) {
+
+    if (!user || !(await bcrypt.compare(password, user?.password))) {
       return res.status(401).json({ message: "Invalid email or password" });
     }
 
-    // Compare password
-    const isMatch = await bcrypt.compare(password, user?.password);
-    if (!isMatch)
-      return res.status(401).json({ message: "Invalid email or password" });
+    // if (!user) {
+    //   return res.status(401).json({ message: "Invalid email or password" });
+    // }
+
+    // // Compare password
+    // const isMatch = await bcrypt.compare(password, user?.password);
+    // if (!isMatch)
+    //   return res.status(401).json({ message: "Invalid email or password" });
 
     // Return user data with JWT
     res.json({

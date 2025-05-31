@@ -3,6 +3,9 @@ import { UserContext } from "../context/userContext";
 import { useNavigate } from "react-router-dom";
 import { SIDE_MENU_DATA, SIDE_MENU_USER_DATA } from "../utils/data";
 import { IconType } from "react-icons";
+import DEFAULT_AVATAR from "../assets/images/default.png";
+import Modal from "./Modal";
+import LogoutAlert from "./LogoutAlert";
 
 type MenuItem = {
   id: string;
@@ -13,35 +16,35 @@ type MenuItem = {
 
 type SideMenuProps = {
   activeMenu: string;
+  onLogoutClick: () => void;
 };
 
-function SideMenu({ activeMenu }: SideMenuProps) {
+function SideMenu({ activeMenu, onLogoutClick }: SideMenuProps) {
   const { user, clearUser } = useContext(UserContext);
   const [sideMenuData, setSideMenuData] = useState<MenuItem[]>([]);
 
   const navigate = useNavigate();
 
   const handleClick = (route: string) => {
-    if (route === "logout") {
-      handleLogout();
+    if (route === "/logout") {
+      onLogoutClick();
       return;
     }
 
     navigate(route);
   };
 
-  const handleLogout = () => {
-    localStorage.clear();
-    clearUser();
-    navigate("/login");
-  };
+  // const handleLogout = () => {
+  //   localStorage.clear();
+  //   clearUser();
+  //   navigate("/login");
+  // };
 
   useEffect(() => {
     if (user) {
       setSideMenuData(
         user?.role === "admin" ? SIDE_MENU_DATA : SIDE_MENU_USER_DATA
       );
-      return () => {};
     }
   }, [user]);
   return (
@@ -49,7 +52,7 @@ function SideMenu({ activeMenu }: SideMenuProps) {
       <div className="flex flex-col items-center justify-center mb-7 pt-5">
         <div className="relative">
           <img
-            src={user?.profileImageUrl || ""}
+            src={user?.profileImageUrl || DEFAULT_AVATAR}
             alt="Profile Image"
             className="w-20 h-20 bg-slate-400 rounded-full"
           />
@@ -82,6 +85,17 @@ function SideMenu({ activeMenu }: SideMenuProps) {
           {item.label}
         </button>
       ))}
+
+      {/* <Modal
+        isOpen={openLogoutAlert}
+        onClose={() => setOpenLogoutAlert(false)}
+        title="Logout"
+      >
+        <LogoutAlert
+          content="Are you sure you want to logout?"
+          onLogout={() => handleLogout()}
+        />
+      </Modal> */}
     </div>
   );
 }

@@ -1,5 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import Task from "../models/Task";
+import Plan from "../models/Plan";
+import { updatePlanProgress } from "./planController";
 
 // @desc Get all tasks (Admin: all, User: only assigned tasks)
 // @route GET /api/tasks/
@@ -20,15 +22,16 @@ const getTasks = async (
     let tasks;
 
     if (req.user.role === "admin") {
-      tasks = await Task.find(filter).populate(
-        "assignedTo",
-        "name email profileImageUrl"
-      );
+      tasks = await Task.find(filter)
+        .populate("assignedTo", "name email profileImageUrl")
+        .populate("planId", "name startDate");
     } else {
       tasks = await Task.find({
         ...filter,
         assignedTo: req.user?._id,
-      }).populate("assignedTo", "name email profileImageUrl");
+      })
+        .populate("assignedTo", "name email profileImageUrl")
+        .populate("planId", "name startDate");
     }
 
     // Add completed todoChecklist count to each task
@@ -114,6 +117,8 @@ const createTask = async (
       description,
       priority,
       dueDate,
+      amount,
+      planId,
       assignedTo,
       attachments,
       todoChecklist,
@@ -131,10 +136,14 @@ const createTask = async (
       priority,
       dueDate,
       assignedTo,
+      amount,
+      planId,
       createdBy: req.user?._id,
       attachments,
       todoChecklist,
     });
+
+    await Plan.findByIdAndUpdate(planId, { $addToSet: { tasks: task._id } });
 
     res.status(201).json({ message: "Task created sucessfully", task });
   } catch (err) {
@@ -158,6 +167,8 @@ const updateTask = async (
     task.title = req.body.title || task.title;
     task.description = req.body.description || task.description;
     task.priority = req.body.priority || task.priority;
+    task.amount = req.body.amount || task.amount;
+    task.planId = req.body.planId || task.planId;
     task.dueDate = req.body.dueDate || task.dueDate;
     task.todoChecklist = req.body.todoChecklist || task.todoChecklist;
     task.attachments = req.body.attachments || task.attachments;
@@ -168,10 +179,11 @@ const updateTask = async (
           .status(400)
           .json({ message: "assignedTo must be an array of user ID's" });
       }
+
       task.assignedTo = req.body.assignedTo;
 
       const updatedTask = await task.save();
-      res.json({ message: "Task updated successfully", updateTask });
+      res.json({ message: "Task updated successfully", updatedTask });
     }
   } catch (err) {
     next(err);
@@ -191,7 +203,23 @@ const deleteTask = async (
 
     if (!task) return res.status(404).json({ message: "Task not found" });
 
+    const planId = task.planId;
+    const taskAmount = task.amount;
+
+    // If the task is NOT completed, reduce the plan's goal
+    if (planId && task.status !== "Completed") {
+      const plan = await Plan.findById(planId);
+      if (plan) {
+        plan.goal = Math.max(0, plan.goal - taskAmount); // Prevent negative goal
+        await plan.save();
+      }
+    }
+
     await task.deleteOne();
+
+    if (planId) {
+      await updatePlanProgress(planId);
+    }
     res.json({ message: "Task deleted successfully" });
   } catch (err) {
     next(err);
@@ -226,6 +254,10 @@ const updateTaskStatus = async (
     }
 
     await task.save();
+
+    if (task.planId) {
+      await updatePlanProgress(task.planId);
+    }
     res.json({ message: "Task status updated", task });
   } catch (err) {
     next(err);
@@ -272,6 +304,9 @@ const updateTaskChecklist = async (
     }
 
     await task.save();
+    if (task.status === "Completed" && task.planId) {
+      await updatePlanProgress(task.planId);
+    }
     const updatedTask = await Task.findById(req.params.id).populate(
       "assignedTo",
       "name email profileImageUrl"

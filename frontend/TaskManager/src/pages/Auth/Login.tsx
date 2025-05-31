@@ -18,11 +18,8 @@ function Login() {
   const navigate = useNavigate();
 
   // Handle Login Form Submit
-  const handleLogin = async (
-    e: React.FormEvent<HTMLFormElement>
-  ): Promise<void> => {
+  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
     if (!validateEmail(email)) {
       setError("Please enter a valid email address.");
       return;
@@ -75,9 +72,10 @@ function Login() {
         <form onSubmit={handleLogin}>
           <Input
             value={email}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-              setEmail(e.target.value)
-            }
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+              setEmail(e.target.value);
+              setError(null);
+            }}
             label="Email Address"
             placeholder="john@example.com"
             type="text"
@@ -85,9 +83,10 @@ function Login() {
 
           <Input
             value={password}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-              setPassword(e.target.value)
-            }
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+              setPassword(e.target.value);
+              setError(null);
+            }}
             label="Password"
             placeholder="Min 8 Characters"
             type="password"

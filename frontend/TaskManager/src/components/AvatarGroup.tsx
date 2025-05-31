@@ -1,3 +1,5 @@
+import DEFAULT_AVATAR from "../assets/images/default.png";
+
 function AvatarGroup({
   avatars,
   maxVisible = 3,
@@ -10,7 +12,7 @@ function AvatarGroup({
       {avatars.slice(0, maxVisible).map((avatar, index) => (
         <img
           key={index}
-          src={avatar}
+          src={avatar || DEFAULT_AVATAR}
           alt={`Avatar ${index}`}
           className="w-9 h-9 rounded-full border-2 border-white -ml-3 first:ml-0"
         />
