@@ -54,8 +54,6 @@ router.post(
           }))
         : [];
 
-      console.log(newAttachments);
-
       task.attachments.push(...newAttachments);
 
       await task.save();
