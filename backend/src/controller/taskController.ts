@@ -23,6 +23,7 @@ const getTasks = async (
 
     if (req.user.role === "admin") {
       tasks = await Task.find(filter)
+        .sort({ dueDate: 1 })
         .populate("assignedTo", "name email profileImageUrl")
         .populate("planId", "name startDate");
     } else {
@@ -30,6 +31,7 @@ const getTasks = async (
         ...filter,
         assignedTo: req.user?._id,
       })
+        .sort({ dueDate: 1 })
         .populate("assignedTo", "name email profileImageUrl")
         .populate("planId", "name startDate");
     }
@@ -377,7 +379,8 @@ const getDashboardData = async (
     const recentTasks = await Task.find()
       .sort({ createdAt: -1 })
       .limit(10)
-      .select("title status priority dueDate createdAt");
+      .select("title status priority dueDate createdAt planId")
+      .populate("planId", "name");
 
     res.status(200).json({
       statistics: { totalTasks, pendingTasks, completedTasks, overdueTasks },

@@ -117,15 +117,28 @@ const createPlan = async (
     const taskPromises = businessDays.map((date, index) => {
       const amount = index < remainder ? perTaskAmount + 1 : perTaskAmount;
       return Task.create({
-        title: `Task for ${date.toDateString()}`,
-        description: `Auto-generated task for ${date.toDateString()}`,
+        title: `Задача на ${date.toLocaleDateString("ru-RU", {
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        })}`,
+        description: `Сгенерированная задача на ${date.toLocaleDateString(
+          "ru-RU",
+          {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+          }
+        )} с объемом ${amount}`,
         priority: "Medium",
         dueDate: date,
         amount,
         planId: plan._id,
         createdBy: req.user?._id,
         assignedTo: plan.assignedTo,
-        todoChecklist: [{ text: "Impelemet something", completed: false }],
+        todoChecklist: [
+          { text: `Выполнить объем ${amount}`, completed: false },
+        ],
       });
     });
 
