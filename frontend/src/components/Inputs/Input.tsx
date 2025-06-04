@@ -1,7 +1,15 @@
 import { useState } from "react";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa6";
 
-function Input({ value, onChange, label, placeholder, type }) {
+interface InputProps {
+  value: string;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  label: string;
+  placeholder?: string;
+  type: "text" | "password" | "email" | "number";
+}
+
+function Input({ value, onChange, label, placeholder, type }: InputProps) {
   const [showPassword, setShowPassword] = useState(false);
 
   const toggleShowPassword = () => {

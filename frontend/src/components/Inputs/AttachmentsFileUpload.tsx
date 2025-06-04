@@ -1,25 +1,56 @@
-import React, { useRef, useState } from "react";
+import { ChangeEvent, Dispatch, SetStateAction, useRef, useState } from "react";
 import axiosInstance from "../../utils/axiosInstance";
 import { API_PATHS } from "../../utils/apiPath";
 import { HiOutlineTrash } from "react-icons/hi";
-import toast from "react-hot-toast";
 
-function AttachmentsFileUpload({ taskId, setTask }) {
-  const fileInputRef = useRef(null);
-  const [files, setFiles] = useState([]);
-  const [uploadStatus, setUploadStatus] = useState("");
+type Priority = "Low" | "Medium" | "High";
+type Status = "In Progress" | "Completed" | "Pending";
 
-  const handleFileChange = (e) => {
-    const selectedFiles = Array.from(e.target.files);
+interface TodoItem {
+  text: string;
+  completed: boolean;
+}
+
+interface User {
+  profileImageUrl: string;
+}
+
+interface Task {
+  id: string;
+  title: string;
+  description: string;
+  priority: Priority;
+  status: Status;
+  dueDate: string | null;
+  todoChecklist: TodoItem[];
+  assignedTo: User[];
+  attachments: string[];
+}
+
+interface AttachmentsFileUploadProps {
+  taskId: string;
+  setTask: Dispatch<SetStateAction<Task | null>>;
+}
+
+const AttachmentsFileUpload: React.FC<AttachmentsFileUploadProps> = ({
+  taskId,
+  setTask,
+}) => {
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [files, setFiles] = useState<File[]>([]);
+  const [uploadStatus, setUploadStatus] = useState<string>("");
+
+  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const selectedFiles = Array.from(e.target.files || []);
     const validFiles = selectedFiles.filter(
       (file) => file.type.startsWith("image/") || file.type.startsWith("video/")
     );
     setFiles(validFiles);
 
-    e.target.value = null;
+    e.target.value = "";
   };
 
-  const handleRemoveFile = (index) => {
+  const handleRemoveFile = (index: number) => {
     setFiles((prev) => prev.filter((_, i) => i !== index));
   };
 
@@ -30,7 +61,7 @@ function AttachmentsFileUpload({ taskId, setTask }) {
     files.forEach((file) => formData.append("attachments", file));
 
     try {
-      setUploadStatus("Uploading...");
+      setUploadStatus("Загрузка...");
       const response = await axiosInstance.post(
         API_PATHS.TASKS.UPLOAD_ATTACHMENT(taskId),
         formData,
@@ -44,9 +75,9 @@ function AttachmentsFileUpload({ taskId, setTask }) {
 
       setTask(response.data.task);
       setFiles([]);
-      setUploadStatus("Upload successful!");
+      setUploadStatus("Загрузка завершена!");
     } catch (err) {
-      setUploadStatus("Upload failed.");
+      setUploadStatus("Ошибка загрузки.");
       console.error(err);
     }
   };
@@ -60,7 +91,7 @@ function AttachmentsFileUpload({ taskId, setTask }) {
       <div className="flex items-center gap-4 mb-4 flex-wrap justify-center">
         <button
           type="button"
-          onClick={() => fileInputRef.current.click()}
+          onClick={() => fileInputRef.current?.click()}
           className="px-5 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400"
         >
           Выбрать файл
@@ -110,6 +141,6 @@ function AttachmentsFileUpload({ taskId, setTask }) {
       )}
     </div>
   );
-}
+};
 
 export default AttachmentsFileUpload;

@@ -32,12 +32,6 @@ function SideMenu({ activeMenu, onLogoutClick }: SideMenuProps) {
     navigate(route);
   };
 
-  // const handleLogout = () => {
-  //   localStorage.clear();
-  //   clearUser();
-  //   navigate("/login");
-  // };
-
   useEffect(() => {
     if (user) {
       setSideMenuData(

@@ -2,12 +2,16 @@ import moment from "moment/min/moment-with-locales";
 import { useContext } from "react";
 import { UserContext } from "../context/userContext";
 
+type Plan = {
+  name: string;
+};
+
 type Task = {
   _id: string;
   title: string;
   status: "Completed" | "Pending" | "In Progress" | string;
   priority: "High" | "Medium" | "Low" | string;
-  planId: string;
+  planId: Plan | string;
   createdAt?: string;
 };
 
@@ -115,7 +119,9 @@ function TaskListTable({ tableData }: TaskListTableProps) {
               </td>
               <td className="py-4 px-4 text-gray-700 text-[13px] text-nowrap hidden md:table-cell">
                 {user?.role === "admin"
-                  ? task.planId.name
+                  ? typeof task.planId === "object" &&
+                    task.planId !== null &&
+                    "name" in task.planId
                     ? task.planId.name
                     : "N/A"
                   : task.createdAt

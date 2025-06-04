@@ -17,7 +17,7 @@ interface TaskCardProps {
   todoChecklist: { text: string; completed: boolean }[];
   planName: string;
   onClick: () => void;
-  amount: number; // assuming amount can be a string or number
+  amount: number;
 }
 
 function TaskCard({

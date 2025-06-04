@@ -1,4 +1,9 @@
-function DeleteAlert({ content, onDelete }) {
+interface DeleteAlertProps {
+  content: string;
+  onDelete: () => void;
+}
+
+function DeleteAlert({ content, onDelete }: DeleteAlertProps) {
   return (
     <div>
       <p className="text-sm dark:text-white">{content}</p>

@@ -27,6 +27,7 @@ export const API_PATHS = {
     UPDATE_TASK_STATUS: (taskId: string) => `/api/tasks/${taskId}/status`, // Update task status
     UPDATE_TODO_CHECKLIST: (taskId: string) => `/api/tasks/${taskId}/todo`, // Update todo checklist
     UPLOAD_ATTACHMENT: (taskId: string) => `/api/tasks/${taskId}/upload-files`, // Upload attachment to the task
+    DOWNLOAD_ATTACHMENT: (taskId: string) => `/api/tasks/${taskId}/download`, // Download attachments of the task
   },
 
   PLANS: {

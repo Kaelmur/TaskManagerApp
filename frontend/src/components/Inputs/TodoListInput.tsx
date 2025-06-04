@@ -1,19 +1,33 @@
 import { useState } from "react";
 import { HiMiniPlus, HiOutlineTrash } from "react-icons/hi2";
 
-function TodoListInput({ todoList, setTodoList }) {
+export type TodoChecklistItem = {
+  text: string;
+  completed: boolean;
+};
+
+type TodoListInputProps = {
+  todoList: TodoChecklistItem[];
+  setTodoList: (value: TodoChecklistItem[]) => void;
+};
+
+function TodoListInput({ todoList, setTodoList }: TodoListInputProps) {
   const [option, setOption] = useState("");
 
   //   Function to handle adding an option
   const handleAddOption = () => {
     if (option.trim()) {
-      setTodoList([...todoList, option.trim()]);
+      const newItem: TodoChecklistItem = {
+        text: option.trim(),
+        completed: false,
+      };
+      setTodoList([...todoList, newItem]);
       setOption("");
     }
   };
 
   //   Function to handle deleting an option
-  const handleDeleteOption = (index) => {
+  const handleDeleteOption = (index: number) => {
     const updatedArr = todoList.filter((_, idx) => idx !== index);
     setTodoList(updatedArr);
   };
@@ -22,14 +36,14 @@ function TodoListInput({ todoList, setTodoList }) {
     <div>
       {todoList.map((item, index) => (
         <div
-          key={item}
+          key={item.text}
           className="flex justify-between bg-gray-50 border border-gray-100 px-3 py-2 rounded-md mb-3 mt-2"
         >
           <p className="text-xs text-black">
             <span className="text-xs text-gray-400 font-semibold mr-2">
               {index < 9 ? `0${index + 1}` : index + 1}
             </span>
-            {item}
+            {item.text}
           </p>
 
           <button

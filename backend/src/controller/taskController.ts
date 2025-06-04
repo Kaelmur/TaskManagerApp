@@ -1,7 +1,10 @@
 import { Request, Response, NextFunction } from "express";
 import Task from "../models/Task";
 import Plan from "../models/Plan";
+import archiver from "archiver";
+import fs from "fs";
 import { updatePlanProgress } from "./planController";
+import path from "path";
 
 // @desc Get all tasks (Admin: all, User: only assigned tasks)
 // @route GET /api/tasks/
@@ -473,6 +476,58 @@ const getUserDashboardData = async (
   }
 };
 
+const downloadTaskAttachments = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<any> => {
+  try {
+    const task = await Task.findById(req.params.id);
+
+    if (!task) {
+      return res.status(404).json({ message: "Task not found" });
+    }
+
+    if (req.user.role !== "admin") {
+      return res.status(403).json({ message: "Not authorized" });
+    }
+
+    const attachments: string[] = task.attachments.map((file) => file.url);
+
+    if (!attachments || attachments.length === 0) {
+      return res.status(400).json({ message: "No attachments found" });
+    }
+
+    const archive = archiver("zip", { zlib: { level: 9 } });
+
+    // Handle stream errors
+    archive.on("error", (err) => {
+      throw err;
+    });
+
+    res.attachment(`task-${task._id}-attachments.zip`);
+    archive.pipe(res);
+
+    const UPLOADS_DIR = path.join(__dirname, "..", "..", "uploads");
+
+    attachments.forEach((url) => {
+      const decodedPath = decodeURIComponent(url);
+      const fileName = path.basename(decodedPath);
+      const fullPath = path.join(UPLOADS_DIR, fileName);
+
+      if (fs.existsSync(fullPath)) {
+        archive.file(fullPath, { name: fileName });
+      } else {
+        console.warn("File not found:", fullPath);
+      }
+    });
+
+    archive.finalize();
+  } catch (err) {
+    next(err);
+  }
+};
+
 export {
   getTasks,
   getTaskById,
@@ -483,4 +538,5 @@ export {
   updateTaskChecklist,
   getDashboardData,
   getUserDashboardData,
+  downloadTaskAttachments,
 };

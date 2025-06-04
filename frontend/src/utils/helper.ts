@@ -1,9 +1,9 @@
-export const validateEmail = (email) => {
+export const validateEmail = (email: string) => {
   const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   return regex.test(email);
 };
 
-export const addThousandsSeparator = (num) => {
+export const addThousandsSeparator = (num: number | null) => {
   if (num === null || isNaN(num)) return "";
 
   const [integerPart, fractionalPart] = num.toString().split(".");

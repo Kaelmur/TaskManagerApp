@@ -1,11 +1,28 @@
 import { useState } from "react";
 import { LuChevronDown } from "react-icons/lu";
 
-function SelectDropdown({ options, value, onChange, placeholder }) {
+interface Option {
+  value: string | number;
+  label: string;
+}
+
+interface SelectDropdownProps {
+  options: Option[];
+  value: string | number | null;
+  onChange: (value: string | number) => void;
+  placeholder?: string;
+}
+
+function SelectDropdown({
+  options,
+  value,
+  onChange,
+  placeholder,
+}: SelectDropdownProps) {
   const [isOpen, setIsOpen] = useState(false);
 
-  const handleSelect = (option) => {
-    onChange(option);
+  const handleSelect = (selectedValue: string | number) => {
+    onChange(selectedValue);
     setIsOpen(false);
   };
 

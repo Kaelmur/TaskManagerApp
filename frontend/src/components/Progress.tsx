@@ -1,4 +1,9 @@
-function Progress({ progress, status }) {
+interface ProgressProps {
+  progress: number;
+  status: "Active" | "Completed";
+}
+
+function Progress({ progress, status }: ProgressProps) {
   const getColor = () => {
     switch (status) {
       case "Active":
