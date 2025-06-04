@@ -1,9 +1,16 @@
 import { LuSquareArrowOutUpRight } from "react-icons/lu";
 
-function Attachment({ link, index }) {
+type AttachmentProps = {
+  link: {
+    url: string;
+  };
+  index: number;
+};
+
+function Attachment({ link, index }: AttachmentProps) {
   // Handle attachment link click
-  const handleLinkClick = (link) => {
-    window.open(link, "_blank");
+  const handleLinkClick = (url: string) => {
+    window.open(url, "_blank");
   };
 
   return (

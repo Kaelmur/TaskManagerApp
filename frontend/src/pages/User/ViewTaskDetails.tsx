@@ -192,7 +192,9 @@ function ViewTaskDetails() {
               </div>
 
               <div className="mt-6 text-sm">
-                <AttachmentsFileUpload taskId={id} setTask={setTask} />
+                {typeof id === "string" && (
+                  <AttachmentsFileUpload taskId={id} setTask={setTask} />
+                )}
               </div>
 
               {task.attachments?.length > 0 && (
@@ -201,7 +203,11 @@ function ViewTaskDetails() {
                     Вложения
                   </label>
                   {task.attachments.map((link, index) => (
-                    <Attachment key={index} link={link} index={index} />
+                    <Attachment
+                      key={index}
+                      link={{ url: link }}
+                      index={index}
+                    />
                   ))}
                 </div>
               )}

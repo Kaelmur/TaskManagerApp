@@ -6,8 +6,21 @@ import { LuFileSpreadsheet } from "react-icons/lu";
 import UserCard from "../../components/Cards/UserCard";
 import toast from "react-hot-toast";
 
+interface User {
+  _id: string;
+  name: string;
+  email: string;
+  profileImageUrl: string;
+  role: "member" | "admin";
+  createdAt: string;
+  updatedAt: string;
+  pendingTasks: number;
+  inProgressTasks: number;
+  completedTasks: number;
+}
+
 function ManageUsers() {
-  const [allUsers, setAllUsers] = useState([]);
+  const [allUsers, setAllUsers] = useState<User[]>([]);
 
   const getAllUsers = async () => {
     try {

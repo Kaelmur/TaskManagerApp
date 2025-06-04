@@ -5,7 +5,7 @@ import { API_PATHS } from "../../utils/apiPath";
 import toast from "react-hot-toast";
 import { useLocation, useNavigate } from "react-router-dom";
 import moment from "moment";
-import { LuTrash2 } from "react-icons/lu";
+import { LuTrash2, LuDownload } from "react-icons/lu";
 import { useEffect, useState } from "react";
 import SelectDropdown from "../../components/Inputs/SelectDropdown";
 import SelectUsers from "../../components/Inputs/SelectUsers";
@@ -13,26 +13,36 @@ import TodoListInput from "../../components/Inputs/TodoListInput";
 import Modal from "../../components/Modal";
 import DeleteAlert from "../../components/DeleteAlert";
 import Attachment from "../../components/Attachment";
+import axios from "axios";
 
 type TodoChecklistItem = {
   text: string;
   completed: boolean;
 };
 
+type AttachmentFile = {
+  url: string;
+};
+
 type TaskData = {
   title: string;
   description: string;
   priority: "Low" | "Medium" | "High";
-  dueDate: Date | null | string;
+  dueDate: string | null;
   assignedTo: string[];
   todoChecklist: TodoChecklistItem[];
-  attachments: File[];
+  attachments: AttachmentFile[];
   amount: number;
+};
+
+type ServerTaskData = Omit<TaskData, "assignedTo"> & {
+  _id: string;
+  assignedTo: { _id: string; name: string }[];
 };
 
 function CreateTask() {
   const location = useLocation();
-  const { taskId } = location.state || {};
+  const { taskId }: { taskId?: string } = location.state || {};
   const navigate = useNavigate();
 
   const [taskData, setTaskData] = useState<TaskData>({
@@ -46,12 +56,12 @@ function CreateTask() {
     amount: 0,
   });
 
-  const [currentTask, setCurrentTask] = useState(null);
+  const [currentTask, setCurrentTask] = useState<ServerTaskData | null>(null);
 
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
 
-  const [openDeleteAlert, setOpenDeleteAlert] = useState(false);
+  const [openDeleteAlert, setOpenDeleteAlert] = useState<boolean>(false);
 
   const handleValueChange = <K extends keyof TaskData>(
     key: K,
@@ -84,7 +94,7 @@ function CreateTask() {
         completed: false,
       }));
 
-      const response = await axiosInstance.post(API_PATHS.TASKS.CREATE_TASK, {
+      await axiosInstance.post(API_PATHS.TASKS.CREATE_TASK, {
         ...taskData,
         dueDate: taskData.dueDate
           ? new Date(taskData.dueDate).toISOString()
@@ -108,24 +118,25 @@ function CreateTask() {
     setLoading(true);
 
     try {
-      const todoList = taskData.todoChecklist?.map((item) => {
-        const prevTodoChecklist = currentTask?.todoChecklist || [];
-        const matchedTask = prevTodoChecklist.find((task) => task.text == item);
+      const todoList: TodoChecklistItem[] = taskData.todoChecklist?.map(
+        (item) => {
+          const prevTodoChecklist = currentTask?.todoChecklist || [];
+          const matchedTask = prevTodoChecklist.find(
+            (task: TodoChecklistItem) => task.text === item.text
+          );
 
-        return {
-          text: item,
-          completed: matchedTask ? matchedTask.completed : false,
-        };
-      });
-
-      const response = await axiosInstance.put(
-        API_PATHS.TASKS.UPDATE_TASK(taskId),
-        {
-          ...taskData,
-          dueDate: new Date(taskData.dueDate).toISOString(),
-          todoChecklist: todoList,
+          return {
+            text: item.text,
+            completed: matchedTask ? matchedTask.completed : false,
+          };
         }
       );
+
+      await axiosInstance.put(API_PATHS.TASKS.UPDATE_TASK(taskId!), {
+        ...taskData,
+        dueDate: new Date(taskData.dueDate!).toISOString(),
+        todoChecklist: todoList,
+      });
 
       toast.success("Задача успешно обновлена");
       navigate("/admin/tasks");
@@ -175,15 +186,16 @@ function CreateTask() {
   // get Task by ID
   const getTaskDetailsByID = async () => {
     try {
-      const response = await axiosInstance.get(
-        API_PATHS.TASKS.GET_TASK_BY_ID(taskId)
+      const response = await axiosInstance.get<ServerTaskData>(
+        API_PATHS.TASKS.GET_TASK_BY_ID(taskId!)
       );
 
       if (response.data) {
         const taskInfo = response.data;
+
         setCurrentTask(taskInfo);
 
-        setTaskData((prevState) => ({
+        setTaskData({
           title: taskInfo.title,
           description: taskInfo.description,
           priority: taskInfo.priority,
@@ -191,11 +203,10 @@ function CreateTask() {
             ? moment(taskInfo.dueDate).format("YYYY-MM-DD")
             : null,
           assignedTo: taskInfo?.assignedTo?.map((item) => item?._id) || [],
-          todoChecklist:
-            taskInfo?.todoChecklist?.map((item) => item?.text) || [],
+          todoChecklist: taskInfo.todoChecklist,
           attachments: taskInfo?.attachments || [],
           amount: taskInfo?.amount,
-        }));
+        });
       }
     } catch (error) {
       console.error("Error fetching task details:", error);
@@ -205,16 +216,50 @@ function CreateTask() {
   // Delete Task
   const deleteTask = async () => {
     try {
-      await axiosInstance.delete(API_PATHS.TASKS.DELETE_TASK(taskId));
+      await axiosInstance.delete(API_PATHS.TASKS.DELETE_TASK(taskId!));
 
       setOpenDeleteAlert(false);
       toast.success("Задача успешно удаленна");
       navigate("/admin/tasks");
     } catch (error) {
-      console.error(
-        "Error deleting expenses",
-        error.response?.data?.message || error.message
+      if (axios.isAxiosError(error)) {
+        setError(error.response?.data?.message || "Request failed");
+      } else if (error instanceof Error) {
+        setError(error.message);
+      } else {
+        setError("Something went wrong");
+      }
+    }
+  };
+
+  const downloadAttachments = async () => {
+    try {
+      const token = localStorage.getItem("token");
+
+      const response = await axiosInstance.get(
+        API_PATHS.TASKS.DOWNLOAD_ATTACHMENT(taskId!),
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          responseType: "blob",
+        }
       );
+
+      const blob = response.data;
+      const url = window.URL.createObjectURL(blob);
+
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", `task-${taskId}-attachments.zip`);
+      document.body.appendChild(link);
+      link.click();
+
+      link.remove();
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error("Download error", err);
+      toast.error("Failed to download attachments");
     }
   };
 
@@ -236,12 +281,20 @@ function CreateTask() {
               </h2>
 
               {taskId && (
-                <button
-                  className="flex items-center gap-1.5 text-[13px] font-medium text-rose-500 bg-rose-50 rounded px-2 py-1 border border-rose-100 hover:border-rose-300 cursor-pointer"
-                  onClick={() => setOpenDeleteAlert(true)}
-                >
-                  <LuTrash2 className="text-base" /> Удалить
-                </button>
+                <div className="flex gap-3">
+                  <button
+                    className="flex items-center gap-1.5 text-[13px] font-medium text-primary bg-blue-50 rounded px-2 py-1 border border-blue-100 hover:border-blue-300 cursor-pointer"
+                    onClick={() => downloadAttachments()}
+                  >
+                    <LuDownload className="text-base" /> Скачать вложения
+                  </button>
+                  <button
+                    className="flex items-center gap-1.5 text-[13px] font-medium text-rose-500 bg-rose-50 rounded px-2 py-1 border border-rose-100 hover:border-rose-300 cursor-pointer"
+                    onClick={() => setOpenDeleteAlert(true)}
+                  >
+                    <LuTrash2 className="text-base" /> Удалить
+                  </button>
+                </div>
               )}
             </div>
 
@@ -285,8 +338,8 @@ function CreateTask() {
                 <SelectDropdown
                   options={PRIORITY_DATA}
                   value={taskData.priority}
-                  onChange={(value: TaskData["priority"]) =>
-                    handleValueChange("priority", value)
+                  onChange={(value) =>
+                    handleValueChange("priority", value as TaskData["priority"])
                   }
                   placeholder="Select Priority"
                 />

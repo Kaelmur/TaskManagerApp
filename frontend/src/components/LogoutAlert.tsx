@@ -1,4 +1,9 @@
-function LogoutAlert({ content, onLogout }) {
+interface LogoutAlertProps {
+  content: string;
+  onLogout: () => void;
+}
+
+function LogoutAlert({ content, onLogout }: LogoutAlertProps) {
   return (
     <div>
       <p className="text-sm dark:text-white">{content}</p>

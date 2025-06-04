@@ -3,6 +3,7 @@ import { protect, adminOnly } from "../middlewares/authMiddleware";
 import {
   createTask,
   deleteTask,
+  downloadTaskAttachments,
   getDashboardData,
   getTaskById,
   getTasks,
@@ -26,6 +27,7 @@ router.put("/:id", protect, updateTask); // Update task details
 router.delete("/:id", protect, adminOnly, deleteTask); // Delete a task (Admin only)
 router.put("/:id/status", protect, updateTaskStatus); // Update task status
 router.put("/:id/todo", protect, updateTaskChecklist); // Update task checklist
+router.get("/:id/download", protect, adminOnly, downloadTaskAttachments); // Download attachments
 
 router.post(
   "/:id/upload-files",

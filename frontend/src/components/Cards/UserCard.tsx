@@ -1,6 +1,25 @@
 import DEFAULT_AVATAR from "../../assets/images/default.png";
 
-function UserCard({ userInfo }) {
+interface UserInfo {
+  _id: string;
+  name: string;
+  email: string;
+  profileImageUrl: string;
+  role: "member" | "admin";
+  createdAt: string;
+  updatedAt: string;
+  pendingTasks: number;
+  inProgressTasks: number;
+  completedTasks: number;
+}
+
+interface StatCardProps {
+  label: string;
+  count: number;
+  status: "Pending" | "In Progress" | "Completed";
+}
+
+function UserCard({ userInfo }: { userInfo: UserInfo }) {
   return (
     <div className="user-card p-2">
       <div className="flex items-center justify-between">
@@ -41,7 +60,7 @@ function UserCard({ userInfo }) {
 
 export default UserCard;
 
-const StatCard = ({ label, count, status }) => {
+const StatCard = ({ label, count, status }: StatCardProps) => {
   const getStatusTagColor = () => {
     switch (status) {
       case "In Progress":

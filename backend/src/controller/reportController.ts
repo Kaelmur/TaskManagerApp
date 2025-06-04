@@ -2,7 +2,6 @@ import { NextFunction, Request, Response } from "express";
 import Task from "../models/Task";
 import User from "../models/User";
 import excelJS from "exceljs";
-import { PopulatedDoc } from "mongoose";
 
 // @desc Export all tasks as an Excel file
 // @route GET /api/reports/export/tasks
