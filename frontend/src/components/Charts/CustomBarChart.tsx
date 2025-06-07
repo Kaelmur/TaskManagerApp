@@ -51,7 +51,7 @@ const CustomBarChart: React.FC<CustomBarChartProps> = ({ data }) => {
             {payload[0].payload.priority}
           </p>
           <p className="text-sm text-gray-600">
-            Count:{" "}
+            Счет:{" "}
             <span className="text-sm font-medium text-gray-900">
               {payload[0].payload.count}
             </span>

@@ -33,6 +33,7 @@ type TaskData = {
   todoChecklist: TodoChecklistItem[];
   attachments: AttachmentFile[];
   amount: number;
+  planId: string;
 };
 
 type ServerTaskData = Omit<TaskData, "assignedTo"> & {
@@ -54,9 +55,11 @@ function CreateTask() {
     todoChecklist: [],
     attachments: [],
     amount: 0,
+    planId: "",
   });
 
   const [currentTask, setCurrentTask] = useState<ServerTaskData | null>(null);
+  const [plans, setPlans] = useState<{ _id: string; name: string }[]>([]);
 
   const [error, setError] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
@@ -81,6 +84,7 @@ function CreateTask() {
       todoChecklist: [],
       attachments: [],
       amount: 0,
+      planId: "",
     });
   };
 
@@ -89,17 +93,12 @@ function CreateTask() {
     setLoading(true);
 
     try {
-      const todoList = taskData.todoChecklist?.map((item) => ({
-        text: item,
-        completed: false,
-      }));
-
       await axiosInstance.post(API_PATHS.TASKS.CREATE_TASK, {
         ...taskData,
         dueDate: taskData.dueDate
           ? new Date(taskData.dueDate).toISOString()
           : null,
-        todoChecklist: todoList,
+        todoChecklist: taskData.todoChecklist,
       });
 
       toast.success("Task Created Successfully");
@@ -175,6 +174,11 @@ function CreateTask() {
       return;
     }
 
+    if (!taskData.planId) {
+      setError("Выберите план для задачи.");
+      return;
+    }
+
     if (taskId) {
       updateTask();
       return;
@@ -206,6 +210,7 @@ function CreateTask() {
           todoChecklist: taskInfo.todoChecklist,
           attachments: taskInfo?.attachments || [],
           amount: taskInfo?.amount,
+          planId: taskInfo?.planId,
         });
       }
     } catch (error) {
@@ -233,6 +238,7 @@ function CreateTask() {
   };
 
   const downloadAttachments = async () => {
+    setLoading(true);
     try {
       const token = localStorage.getItem("token");
 
@@ -260,14 +266,30 @@ function CreateTask() {
     } catch (err) {
       console.error("Download error", err);
       toast.error("Failed to download attachments");
+    } finally {
+      setLoading(false);
     }
   };
 
   useEffect(() => {
+    const fetchPlans = async () => {
+      try {
+        const response = await axiosInstance.get(API_PATHS.PLANS.GET_ALL_PLANS);
+        const planArray = Array.isArray(response.data.plans)
+          ? response.data.plans
+          : [];
+        setPlans(planArray);
+      } catch (err) {
+        console.error("Failed to fetch plans", err);
+        setPlans([]);
+      }
+    };
+
+    fetchPlans();
+
     if (taskId) {
       getTaskDetailsByID();
     }
-    return () => {};
   }, [taskId]);
 
   return (
@@ -283,10 +305,18 @@ function CreateTask() {
               {taskId && (
                 <div className="flex gap-3">
                   <button
-                    className="flex items-center gap-1.5 text-[13px] font-medium text-primary bg-blue-50 rounded px-2 py-1 border border-blue-100 hover:border-blue-300 cursor-pointer"
+                    className={`flex items-center gap-1.5 text-[13px] font-medium rounded px-2 py-1 border 
+        ${
+          loading
+            ? "bg-gray-200 text-gray-500 cursor-not-allowed"
+            : "text-primary bg-blue-50 border-blue-100 hover:border-blue-300 cursor-pointer"
+        }
+      `}
                     onClick={() => downloadAttachments()}
+                    disabled={loading}
                   >
-                    <LuDownload className="text-base" /> Скачать вложения
+                    <LuDownload className="text-base" />{" "}
+                    {loading ? "Скачивание..." : "Скачать вложения"}
                   </button>
                   <button
                     className="flex items-center gap-1.5 text-[13px] font-medium text-rose-500 bg-rose-50 rounded px-2 py-1 border border-rose-100 hover:border-rose-300 cursor-pointer"
@@ -327,6 +357,24 @@ function CreateTask() {
                   handleValueChange("description", target.value)
                 }
               />
+            </div>
+
+            <div className="mt-3">
+              <label className="text-xs font-medium text-slate-600">План</label>
+              <select
+                className="form-input"
+                value={taskData.planId || ""}
+                onChange={(e) => handleValueChange("planId", e.target.value)}
+              >
+                <option value="" disabled>
+                  Выберите план
+                </option>
+                {plans.map((plan) => (
+                  <option key={plan._id} value={plan._id}>
+                    {plan.name}
+                  </option>
+                ))}
+              </select>
             </div>
 
             <div className="grid grid-cols-12 gap-4 mt-2">
@@ -438,10 +486,10 @@ function CreateTask() {
       <Modal
         isOpen={openDeleteAlert}
         onClose={() => setOpenDeleteAlert(false)}
-        title="Delete Task"
+        title="Удалить Задачу"
       >
         <DeleteAlert
-          content="Are you sure you want to delete this task?"
+          content="Вы уверены, что хотите удалить это задачу?"
           onDelete={() => deleteTask()}
         />
       </Modal>

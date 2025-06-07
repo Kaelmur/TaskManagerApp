@@ -2,9 +2,9 @@ import { Request, Response, NextFunction } from "express";
 import Task from "../models/Task";
 import Plan from "../models/Plan";
 import archiver from "archiver";
-import fs from "fs";
 import { updatePlanProgress } from "./planController";
 import path from "path";
+import axios from "axios";
 
 // @desc Get all tasks (Admin: all, User: only assigned tasks)
 // @route GET /api/tasks/
@@ -148,7 +148,12 @@ const createTask = async (
       todoChecklist,
     });
 
-    await Plan.findByIdAndUpdate(planId, { $addToSet: { tasks: task._id } });
+    if (planId && typeof amount === "number" && amount > 0) {
+      await Plan.findByIdAndUpdate(planId, {
+        $addToSet: { tasks: task._id },
+        $inc: { goal: amount },
+      });
+    }
 
     res.status(201).json({ message: "Task created sucessfully", task });
   } catch (err) {
@@ -505,22 +510,32 @@ const downloadTaskAttachments = async (
       throw err;
     });
 
-    res.attachment(`task-${task._id}-attachments.zip`);
+    res.attachment(`task-${task.dueDate}-attachments.zip`);
     archive.pipe(res);
 
     const UPLOADS_DIR = path.join(__dirname, "..", "..", "uploads");
 
-    attachments.forEach((url) => {
-      const decodedPath = decodeURIComponent(url);
-      const fileName = path.basename(decodedPath);
-      const fullPath = path.join(UPLOADS_DIR, fileName);
+    // attachments.forEach((url) => {
+    //   const decodedPath = decodeURIComponent(url);
+    //   const fileName = path.basename(decodedPath);
+    //   const fullPath = path.join(UPLOADS_DIR, fileName);
 
-      if (fs.existsSync(fullPath)) {
-        archive.file(fullPath, { name: fileName });
-      } else {
-        console.warn("File not found:", fullPath);
-      }
-    });
+    //   if (fs.existsSync(fullPath)) {
+    //     archive.file(fullPath, { name: fileName });
+    //   } else {
+    //     console.warn("File not found:", fullPath);
+    //   }
+    // });
+    for (const url of attachments) {
+      const decodedUrl = decodeURIComponent(url);
+      const fileName = decodedUrl.split("/").pop()?.split("?")[0] || "file";
+
+      const response = await axios.get(decodedUrl, {
+        responseType: "stream",
+      });
+
+      archive.append(response.data, { name: fileName });
+    }
 
     archive.finalize();
   } catch (err) {

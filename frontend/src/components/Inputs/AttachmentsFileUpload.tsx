@@ -2,30 +2,7 @@ import { ChangeEvent, Dispatch, SetStateAction, useRef, useState } from "react";
 import axiosInstance from "../../utils/axiosInstance";
 import { API_PATHS } from "../../utils/apiPath";
 import { HiOutlineTrash } from "react-icons/hi";
-
-type Priority = "Low" | "Medium" | "High";
-type Status = "In Progress" | "Completed" | "Pending";
-
-interface TodoItem {
-  text: string;
-  completed: boolean;
-}
-
-interface User {
-  profileImageUrl: string;
-}
-
-interface Task {
-  id: string;
-  title: string;
-  description: string;
-  priority: Priority;
-  status: Status;
-  dueDate: string | null;
-  todoChecklist: TodoItem[];
-  assignedTo: User[];
-  attachments: string[];
-}
+import { Task } from "../../types/task";
 
 interface AttachmentsFileUploadProps {
   taskId: string;

@@ -8,7 +8,6 @@ import { API_PATHS } from "../../utils/apiPath";
 import moment from "moment/min/moment-with-locales";
 import { IoMdCard } from "react-icons/io";
 import InfoCard from "../../components/Cards/InfoCard";
-import { addThousandsSeparator } from "../../utils/helper";
 import { LuArrowRight } from "react-icons/lu";
 import TaskListTable from "../../components/TaskListTable";
 import CustomPieChart from "../../components/Charts/CustomPieChart";
@@ -156,42 +155,47 @@ function UserDashboard() {
           <InfoCard
             icon={<IoMdCard />}
             label="Задач"
-            value={addThousandsSeparator(
-              dashboardData?.charts?.taskDistribution?.All || 0
-            )}
+            value={dashboardData?.charts?.taskDistribution?.All || 0}
             color="bg-primary"
           />
 
           <InfoCard
             icon={<></>}
             label="Ожидающих задач"
-            value={addThousandsSeparator(
-              dashboardData?.charts?.taskDistribution?.Pending || 0
-            )}
+            value={dashboardData?.charts?.taskDistribution?.Pending || 0}
             color="bg-violet-500"
           />
 
           <InfoCard
             icon={<></>}
             label="Задач в работе"
-            value={addThousandsSeparator(
-              dashboardData?.charts?.taskDistribution?.InProgress || 0
-            )}
+            value={dashboardData?.charts?.taskDistribution?.InProgress || 0}
             color="bg-cyan-500"
           />
 
           <InfoCard
             icon={<></>}
             label="Законченные задачи"
-            value={addThousandsSeparator(
-              dashboardData?.charts?.taskDistribution?.Completed || 0
-            )}
+            value={dashboardData?.charts?.taskDistribution?.Completed || 0}
             color="bg-lime-500"
           />
         </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 my-4 md:my-6">
+        <div className="md:col-span-2">
+          <div className="card">
+            <div className="flex items-center justify-between">
+              <h5 className="text-lg">Недавние задачи</h5>
+
+              <button className="card-btn" onClick={onSeeMore}>
+                Все задачи <LuArrowRight className="text-base" />
+              </button>
+            </div>
+
+            <TaskListTable tableData={dashboardData?.recentTasks || []} />
+          </div>
+        </div>
         <div>
           <div className="card">
             <div className="flex items-center justify-between">
@@ -209,20 +213,6 @@ function UserDashboard() {
             </div>
 
             <CustomBarChart data={barChartData} />
-          </div>
-        </div>
-
-        <div className="md:col-span-2">
-          <div className="card">
-            <div className="flex items-center justify-between">
-              <h5 className="text-lg">Недавние задачи</h5>
-
-              <button className="card-btn" onClick={onSeeMore}>
-                Все задачи <LuArrowRight className="text-base" />
-              </button>
-            </div>
-
-            <TaskListTable tableData={dashboardData?.recentTasks || []} />
           </div>
         </div>
       </div>

@@ -12,7 +12,7 @@ function CustomTooltip({ active, payload }: TooltipProps<ValueType, NameType>) {
           {payload[0].name}
         </p>
         <p className="text-sm text-gray-600">
-          Count:{" "}
+          Счет:{" "}
           <span className="text-sm font-medium text-gray-900">
             {payload[0].value}
           </span>

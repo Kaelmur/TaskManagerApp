@@ -4,6 +4,8 @@ import { API_PATHS } from "../../utils/apiPath";
 import { LuUsers } from "react-icons/lu";
 import Modal from "../Modal";
 import AvatarGroup from "../AvatarGroup";
+// ../assets/images/default.png
+import DEFAULT_AVATAR from "../../assets/images/default.png";
 
 type User = {
   _id: string;
@@ -51,7 +53,9 @@ const SelectUsers: React.FC<SelectUsersProps> = ({
 
   const selectedUserAvatars = allUsers
     .filter((user) => selectedUsers.includes(user._id))
-    .map((user) => user.profileImageUrl);
+    .map((user) =>
+      user.profileImageUrl ? user.profileImageUrl : DEFAULT_AVATAR
+    );
 
   useEffect(() => {
     getAllUsers();
@@ -91,7 +95,9 @@ const SelectUsers: React.FC<SelectUsersProps> = ({
               className="flex items-center gap-4 p-3 border-b border-gray-200"
             >
               <img
-                src={user.profileImageUrl}
+                src={
+                  user.profileImageUrl ? user.profileImageUrl : DEFAULT_AVATAR
+                }
                 alt={user.name}
                 className="w-10 h-10 rounded-full"
               />

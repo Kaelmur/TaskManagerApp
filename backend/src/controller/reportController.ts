@@ -3,6 +3,18 @@ import Task from "../models/Task";
 import User from "../models/User";
 import excelJS from "exceljs";
 
+const priorityMap: Record<string, string> = {
+  Low: "Низкий",
+  Medium: "Средний",
+  High: "Высокий",
+};
+
+const statusMap: Record<string, string> = {
+  Pending: "В ожидании",
+  InProgress: "В процессе",
+  Completed: "Завершено",
+};
+
 // @desc Export all tasks as an Excel file
 // @route GET /api/reports/export/tasks
 // @access Private(Admin)
@@ -12,19 +24,27 @@ const exportTasksReport = async (
   next: NextFunction
 ): Promise<any> => {
   try {
-    const tasks = await Task.find().populate("assignedTo", "name email");
+    const tasks = await Task.find()
+      .populate("assignedTo", "name email")
+      .sort({ dueDate: 1 });
 
     const workbook = new excelJS.Workbook();
-    const worksheet = workbook.addWorksheet("Task Report");
+    const worksheet = workbook.addWorksheet("Отчет о задачах");
 
     worksheet.columns = [
-      { header: "Task ID", key: "_id", width: 25 },
-      { header: "Title", key: "title", width: 30 },
-      { header: "Description", key: "description", width: 50 },
-      { header: "Priority", key: "priority", width: 15 },
-      { header: "Status", key: "status", width: 20 },
-      { header: "Due Date", key: "dueDate", width: 20 },
-      { header: "Assigned To", key: "assignedTo", width: 30 },
+      { header: "id", key: "_id", width: 25 },
+      { header: "Название", key: "title", width: 30 },
+      { header: "Описание", key: "description", width: 50 },
+      { header: "Приоритет", key: "priority", width: 15 },
+      { header: "Статус", key: "status", width: 20 },
+      { header: "Дата окончания", key: "dueDate", width: 20 },
+      {
+        header: "Объем",
+        key: "amount",
+        width: 30,
+        style: { alignment: { horizontal: "left" } },
+      },
+      { header: "Назначено", key: "assignedTo", width: 30 },
     ];
 
     tasks.forEach((task) => {
@@ -35,10 +55,11 @@ const exportTasksReport = async (
         _id: task._id,
         title: task.title,
         description: task.description,
-        priority: task.priority,
-        status: task.status,
+        priority: priorityMap[task.priority] || task.priority,
+        status: statusMap[task.status] || task.status,
         dueDate: task.dueDate.toISOString().split("T")[0],
-        assignedTo: assignedTo || "Unassigned",
+        amount: task.amount,
+        assignedTo: assignedTo || "Неназначено",
       });
     });
 
@@ -115,15 +136,19 @@ const exportUsersReport = async (
     });
 
     const workbook = new excelJS.Workbook();
-    const worksheet = workbook.addWorksheet("User Task Report");
+    const worksheet = workbook.addWorksheet("Отчет о задачах пользователя");
 
     worksheet.columns = [
-      { header: "User Name", key: "name", width: 30 },
+      { header: "Имя Пользователя", key: "name", width: 30 },
       { header: "Email", key: "email", width: 40 },
-      { header: "Total Assigned Tasks", key: "taskCount", width: 20 },
-      { header: "Pending Tasks", key: "pendingTasks", width: 20 },
-      { header: "In Progress Tasks", key: "inProgressTasks", width: 20 },
-      { header: "Completed Tasks", key: "completedTasks", width: 20 },
+      {
+        header: "Количество назначенных задач",
+        key: "taskCount",
+        width: 40,
+      },
+      { header: "Задачи В Ожидании", key: "pendingTasks", width: 20 },
+      { header: "Задачи В Процессе", key: "inProgressTasks", width: 20 },
+      { header: "Завершенные Задачи", key: "completedTasks", width: 20 },
     ];
 
     Object.values(userTaskMap).forEach((user) => {

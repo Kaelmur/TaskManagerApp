@@ -116,6 +116,11 @@ const createPlan = async (
     // Create tasks for each business day
     const taskPromises = businessDays.map((date, index) => {
       const amount = index < remainder ? perTaskAmount + 1 : perTaskAmount;
+
+      const part1 = Math.floor(amount / 3);
+      const part2 = Math.floor((amount - part1) / 2);
+      const part3 = amount - part1 - part2;
+
       return Task.create({
         title: `Задача на ${date.toLocaleDateString("ru-RU", {
           year: "numeric",
@@ -137,7 +142,9 @@ const createPlan = async (
         createdBy: req.user?._id,
         assignedTo: plan.assignedTo,
         todoChecklist: [
-          { text: `Выполнить объем ${amount}`, completed: false },
+          { text: `Выполнить объем ${part1}`, completed: false },
+          { text: `Выполнить объем ${part2}`, completed: false },
+          { text: `Выполнить объем ${part3}`, completed: false },
         ],
       });
     });
