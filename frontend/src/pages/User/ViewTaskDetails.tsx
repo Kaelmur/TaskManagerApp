@@ -8,30 +8,7 @@ import AvatarGroup from "../../components/AvatarGroup";
 import AttachmentsFileUpload from "../../components/Inputs/AttachmentsFileUpload";
 import Spinner from "../../components/Spinner";
 import Attachment from "../../components/Attachment";
-
-type Priority = "Low" | "Medium" | "High";
-type Status = "In Progress" | "Completed" | "Pending";
-
-interface TodoItem {
-  text: string;
-  completed: boolean;
-}
-
-interface User {
-  profileImageUrl: string;
-}
-
-interface Task {
-  id: string;
-  title: string;
-  description: string;
-  priority: Priority;
-  status: Status;
-  dueDate: string | null;
-  assignedTo: User[];
-  todoChecklist: TodoItem[];
-  attachments: string[];
-}
+import { Priority, Status, Task } from "../../types/task";
 
 const priorityMapping: Record<Priority, string> = {
   Low: "Низкий",
@@ -203,11 +180,7 @@ function ViewTaskDetails() {
                     Вложения
                   </label>
                   {task.attachments.map((link, index) => (
-                    <Attachment
-                      key={index}
-                      link={{ url: link }}
-                      index={index}
-                    />
+                    <Attachment key={index} link={link} index={index} />
                   ))}
                 </div>
               )}

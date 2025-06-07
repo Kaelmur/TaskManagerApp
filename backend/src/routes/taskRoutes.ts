@@ -12,7 +12,10 @@ import {
   updateTaskChecklist,
   updateTaskStatus,
 } from "../controller/taskController";
-import { uploadFiles } from "../middlewares/uploadMiddleware";
+import {
+  uploadFiles,
+  uploadToCloudinary,
+} from "../middlewares/uploadMiddleware";
 import Task from "../models/Task";
 
 const router = Router();
@@ -33,6 +36,7 @@ router.post(
   "/:id/upload-files",
   protect,
   uploadFiles.array("attachments", 5),
+  uploadToCloudinary,
   async (req: Request, res: Response): Promise<void> => {
     if (!req.files) {
       res.status(400).json({ message: "No files uploaded" });
@@ -49,9 +53,9 @@ router.post(
 
       const newAttachments = Array.isArray(req.files)
         ? req.files?.map((file: any) => ({
-            url: `${req.protocol}://${req.get(
-              "host"
-            )}/uploads/${encodeURIComponent(file.filename)}`,
+            url: file.cloudinaryUrl, //`${req.protocol}://${req.get(
+            //"host"
+            //)}/uploads/${encodeURIComponent(file.filename)}`,
             type: file.mimetype.includes("image") ? "image" : "video",
           }))
         : [];
