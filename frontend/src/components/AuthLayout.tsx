@@ -1,5 +1,4 @@
 import { ReactNode } from "react";
-import UI_IMG from "../assets/images/auth.png";
 
 interface AuthLayoutProps {
   children: ReactNode;
@@ -13,7 +12,7 @@ function AuthLayout({ children }: AuthLayoutProps) {
         {children}
       </div>
       <div className="hidden md:flex w-[40vw] h-screen items-center justify-center bg-blue-50 bg-[url('/bg-image.jpg')] bg-cover bg-no-repeat bg-center p-8">
-        <img src={UI_IMG} className="w-64 lg:w-[90%]" alt="Auth Illustration" />
+        {/* <img src={UI_IMG} className="w-64 lg:w-[90%]" alt="Auth Illustration" /> */}
       </div>
     </div>
   );

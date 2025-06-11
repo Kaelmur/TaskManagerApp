@@ -88,9 +88,11 @@ function SignUp() {
   return (
     <AuthLayout>
       <div className="lg:w-[100%] h-auto md:h-full mt-10 md:mt-0 flex flex-col justify-center">
-        <h3 className="text-xl font-semibold text-black">Create an Account</h3>
+        <h3 className="text-xl font-semibold text-black">
+          Создать учетную запись
+        </h3>
         <p className="text-xs text-slate-700 mt-[5px] mb-6">
-          Join us today by entering your details below.
+          Присоединяйтесь к нам сегодня, введя свои данные ниже.
         </p>
 
         <form onSubmit={handleSignUp}>
@@ -102,7 +104,7 @@ function SignUp() {
               onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                 setFullName(e.target.value)
               }
-              label="Full Name"
+              label="Полное имя"
               placeholder="John"
               type="text"
             />
@@ -112,7 +114,7 @@ function SignUp() {
               onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                 setEmail(e.target.value)
               }
-              label="Email Address"
+              label="Почта"
               placeholder="john@example.com"
               type="text"
             />
@@ -122,8 +124,8 @@ function SignUp() {
               onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                 setPassword(e.target.value)
               }
-              label="Password"
-              placeholder="Min 8 Characters"
+              label="Пароль"
+              placeholder="Минимум 8 символов"
               type="password"
             />
 
@@ -132,8 +134,8 @@ function SignUp() {
               onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                 setAdminInviteToken(e.target.value)
               }
-              label="Admin Invite Token"
-              placeholder="6 Digit Code"
+              label="Токен приглашения администратора"
+              placeholder="6-значный код"
               type="text"
             />
           </div>
@@ -141,13 +143,13 @@ function SignUp() {
           {error && <p className="text-red-500 text-xs pb-2.5">{error}</p>}
 
           <button type="submit" className="btn-primary">
-            SIGN UP
+            Зарегистрироваться
           </button>
 
           <p className="text-[13px] text-slate-800 mt-3">
-            Already have an account?{" "}
+            Уже есть аккаунт?{" "}
             <Link className="font-medium text-primary underline" to="/login">
-              Login
+              Войти
             </Link>
           </p>
         </form>
