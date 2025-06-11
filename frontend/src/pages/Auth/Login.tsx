@@ -64,9 +64,9 @@ function Login() {
   return (
     <AuthLayout>
       <div className="lg:w-[70%] h-3/4 md:h-full flex flex-col justify-center">
-        <h3 className="text-xl font-semibold text-black">Welcome Back</h3>
+        <h3 className="text-xl font-semibold text-black">С возвращением</h3>
         <p className="text-xs text-slate-700 mt-[5px] mb-6">
-          Please enter your details to log in
+          Пожалуйста, введите свои данные для входа в систему
         </p>
 
         <form onSubmit={handleLogin}>
@@ -76,7 +76,7 @@ function Login() {
               setEmail(e.target.value);
               setError(null);
             }}
-            label="Email Address"
+            label="Почта"
             placeholder="john@example.com"
             type="text"
           />
@@ -87,8 +87,8 @@ function Login() {
               setPassword(e.target.value);
               setError(null);
             }}
-            label="Password"
-            placeholder="Min 8 Characters"
+            label="Пароль"
+            placeholder="Минимум 8 символов"
             type="password"
           />
 
@@ -97,13 +97,13 @@ function Login() {
           )}
 
           <button type="submit" className="btn-primary">
-            LOGIN
+            Войти
           </button>
 
           <p className="text-[13px] text-slate-800 mt-3">
-            Don't have an account?{" "}
+            У вас нет аккаунта?{" "}
             <Link className="font-medium text-primary underline" to="/signup">
-              SignUp
+              Зарегистрироваться
             </Link>
           </p>
         </form>

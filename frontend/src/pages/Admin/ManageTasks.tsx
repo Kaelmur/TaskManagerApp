@@ -123,6 +123,12 @@ function ManageTasks() {
   return (
     <DashboardLayout activeMenu="Задачи">
       <div className="my-5">
+        <button
+          onClick={() => navigate("/admin/create-task")}
+          className="fixed bottom-6 right-6 z-50 bg-primary text-white px-5 py-3 rounded-full shadow-lg shadow-gray-400 hover:bg-blue-700 transition cursor-pointer"
+        >
+          + Создать задачу
+        </button>
         <div className="flex flex-col lg:flex-row lg:items-center justify-between">
           <div className="flex items-center justify-between gap-3">
             <h2 className="text-xl md:text-xl font-medium">Задачи</h2>

@@ -6,6 +6,11 @@ const planSchema = new mongoose.Schema(
   {
     name: { type: String, required: true }, // Name of the plan (e.g., "Mow 2000 meters of lawn")
     goal: { type: Number, required: true }, // The overall goal (e.g., 2000 meters)
+    // goalUnit: {
+    //   type: String,
+    //   enum: ["метров", "штук", "литров"], // Enum to specify units like meters, amount, etc.
+    //   required: true, // Makes it a required field
+    // },
     startDate: { type: Date, required: true }, // The start date of the plan
     endDate: { type: Date, required: true }, // End date of the plan, calculated from startDate and duration
     createdBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
