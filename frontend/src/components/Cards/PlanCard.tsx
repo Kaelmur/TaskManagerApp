@@ -28,9 +28,9 @@ function PlanCard({
   const getStatusTagColor = () => {
     switch (status) {
       case "Active":
-        return "text-cyan-500 bg-cyan-50 border border-cyan-500/10";
+        return "text-cyan-500 bg-cyan-50 dark:bg-cyan-10 border border-cyan-500/10 dark:border-cyan-400/10";
       case "Completed":
-        return "text-lime-500 bg-lime-50 border border-lime-500/10";
+        return "text-lime-500 dark:text-lime-600 bg-lime-50 dark:bg-lime-20 border border-lime-500/10";
     }
   };
 
@@ -56,7 +56,7 @@ function PlanCard({
 
   return (
     <div
-      className="bg-white rounded-xl py-4 shadow-md shadow-gray-100 border border-gray-200/50 cursor-pointer"
+      className="bg-white dark:bg-darksecondary rounded-xl py-4 shadow-md dark:shadow-xs shadow-gray-100 dark:shadow-gray-500 border border-gray-200/50 dark:border-gray-700/50 cursor-pointer"
       onClick={onClick}
     >
       <div className="flex items-end gap-3 px-4">
@@ -72,15 +72,15 @@ function PlanCard({
           status === "Active" ? "border-cyan-500" : "border-indigo-500"
         }`}
       >
-        <p className="text-sm font-medium text-gray-800 mt-4 line-clamp-2">
+        <p className="text-sm font-medium text-gray-800  dark:text-white mt-4 line-clamp-2">
           {name}
         </p>
-        <p className="text-xs text-gray-500 mt-1.5 line-clamp-2 leading-[18px]">
+        <p className="text-xs text-gray-500 dark:text-gray-400 mt-1.5 line-clamp-2 leading-[18px]">
           Цель - {goal}
         </p>
-        <p className="text-[13px] text-gray-700/80 font-medium mt-2 mb-2 leading-[18px]">
+        <p className="text-[13px] text-gray-700/80 dark:text-gray-100/80 font-medium mt-2 mb-2 leading-[18px]">
           Выполнено:{" "}
-          <span className="font-semibold text-gray-700">
+          <span className="font-semibold text-gray-700 dark:text-gray-300">
             {completedAmount} / {goal}
           </span>
         </p>
@@ -91,15 +91,19 @@ function PlanCard({
       <div className="px-4">
         <div className="flex items-center justify-between my-1">
           <div>
-            <label className="text-xs text-gray-500">Дата начала</label>
-            <p className="text-[13px] font-medium text-gray-900">
+            <label className="text-xs text-gray-500 dark:text-gray-400">
+              Дата начала
+            </label>
+            <p className="text-[13px] font-medium text-gray-900 dark:text-gray-300">
               {moment(startDate).format("Do MMM YYYY")}
             </p>
           </div>
 
           <div>
-            <label className="text-xs text-gray-500">Дата окончания</label>
-            <p className="text-[13px] font-medium text-gray-900">
+            <label className="text-xs text-gray-500 dark:text-gray-400">
+              Дата окончания
+            </label>
+            <p className="text-[13px] font-medium text-gray-900 dark:text-gray-300">
               {moment(endDate).format("Do MMM YYYY")}
             </p>
           </div>

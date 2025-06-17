@@ -25,11 +25,11 @@ function TaskListTable({ tableData }: TaskListTableProps) {
   const getStatusBadgeColor = (status: string) => {
     switch (status) {
       case "Completed":
-        return "bg-green-100 text-green-500 border border-green-200";
+        return "bg-green-100 dark:bg-green-200 text-green-500 dark:text-green-700 border border-green-200 dark:border-green-300";
       case "Pending":
-        return "bg-purple-100 text-purple-500 border border-purple-200";
+        return "bg-purple-100 dark:bg-purple-200 text-purple-500 dark:text-purple-700 border border-purple-200 dark:border-purple-300";
       case "In Progress":
-        return "bg-cyan-100 text-cyan-500 border border-cyan-200";
+        return "bg-cyan-100 dark:bg-cyan-200 text-cyan-500 dark:text-cyan-700 border border-cyan-200 dark:border-cyan-300";
       default:
         return "bg-gray-100 text-gray-500 border border-gray-200";
     }
@@ -38,11 +38,11 @@ function TaskListTable({ tableData }: TaskListTableProps) {
   const getPriorityBadgeColor = (priority: string) => {
     switch (priority) {
       case "High":
-        return "bg-red-100 text-red-500 border border-red-200";
+        return "bg-red-100 dark:bg-red-200 text-red-500 dark:text-red-700 border border-red-200 dark:border-red-300";
       case "Medium":
-        return "bg-orange-100 text-orange-500 border border-orange-200";
+        return "bg-orange-100 dark:bg-orange-200 text-orange-500 dark:text-orange-700 border border-orange-200 dark:border-orange-300";
       case "Low":
-        return "bg-green-100 text-green-500 border border-green-200";
+        return "bg-green-100 dark:bg-green-200 text-green-500 dark:text-green-700 border border-green-200 dark:border-green-300";
       default:
         return "bg-gray-100 text-gray-500 border border-gray-200";
     }
@@ -79,24 +79,27 @@ function TaskListTable({ tableData }: TaskListTableProps) {
       <table className="min-w-full">
         <thead>
           <tr className="text-left">
-            <th className="py-3 px-4 text-gray-800 font-medium text-[13px]">
+            <th className="py-3 px-4 text-gray-800 dark:text-gray-400 font-medium text-[13px]">
               Название
             </th>
-            <th className="py-3 px-4 text-gray-800 font-medium text-[13px]">
+            <th className="py-3 px-4 text-gray-800 dark:text-gray-400 font-medium text-[13px]">
               Статус
             </th>
-            <th className="py-3 px-4 text-gray-800 font-medium text-[13px]">
+            <th className="py-3 px-4 text-gray-800 dark:text-gray-400 font-medium text-[13px]">
               Приоритет
             </th>
-            <th className="py-3 px-4 text-gray-800 font-medium text-[13px] hidden md:table-cell">
+            <th className="py-3 px-4 text-gray-800 dark:text-gray-400 font-medium text-[13px] hidden md:table-cell">
               {user?.role === "admin" ? "План" : "Создано"}
             </th>
           </tr>
         </thead>
         <tbody>
           {tableData.map((task) => (
-            <tr key={task._id} className="border-t border-gray-200">
-              <td className="my-3 mx-4 text-gray-700 text-[13px] line-clamp-1 overflow-hidden">
+            <tr
+              key={task._id}
+              className="border-t border-gray-200 dark:border-gray-700"
+            >
+              <td className="my-3 mx-4 text-gray-700 dark:text-gray-300 text-[13px] line-clamp-1 overflow-hidden">
                 {task.title}
               </td>
               <td className="py-4 px-4">
@@ -117,7 +120,7 @@ function TaskListTable({ tableData }: TaskListTableProps) {
                   {getPriorityLabel(task.priority)}
                 </span>
               </td>
-              <td className="py-4 px-4 text-gray-700 text-[13px] text-nowrap hidden md:table-cell">
+              <td className="py-4 px-4 text-gray-700 dark:text-gray-300 text-[13px] text-nowrap hidden md:table-cell">
                 {user?.role === "admin"
                   ? typeof task.planId === "object" &&
                     task.planId !== null &&

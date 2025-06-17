@@ -27,7 +27,7 @@ function UserCard({ userInfo }: { userInfo: UserInfo }) {
           <img
             src={userInfo?.profileImageUrl || DEFAULT_AVATAR}
             alt={`Avatar`}
-            className="w-12 h-12 rounded-full border-2 border-white"
+            className="w-12 h-12 rounded-full border-2 border-white dark:border-black"
           />
 
           <div>
@@ -64,21 +64,22 @@ const StatCard = ({ label, count, status }: StatCardProps) => {
   const getStatusTagColor = () => {
     switch (status) {
       case "In Progress":
-        return "text-cyan-500 bg-gray-50";
+        return "text-cyan-500 dark:text-cyan-300 bg-gray-50";
 
       case "Completed":
-        return "text-indigo-500 bg-gray-50";
+        return "text-indigo-500 dark:text-indigo-300 bg-gray-50";
 
       default:
-        return "text-violet-500 bg-gray-50";
+        return "text-violet-500 dark:text-violet-400 bg-gray-50";
     }
   };
 
   return (
     <div
-      className={`flex-1 text-[10px] font-medium ${getStatusTagColor()} px-4 py-0.5 rounded`}
+      className={`flex-1 text-[10px] font-medium ${getStatusTagColor()} px-4 py-0.5 rounded min-h-[20px] dark:bg-gray-800`}
     >
-      <span className="text-[12px] font-semibold">{count}</span> <br /> {label}
+      <span className="text-[14px] font-semibold leading-none">{count} </span>
+      {label}
     </div>
   );
 };

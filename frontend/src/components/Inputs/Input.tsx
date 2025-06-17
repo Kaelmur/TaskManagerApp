@@ -18,7 +18,9 @@ function Input({ value, onChange, label, placeholder, type }: InputProps) {
 
   return (
     <div>
-      <label className="text-[13px] text-slate-800">{label}</label>
+      <label className="text-[13px] text-slate-800 dark:text-slate-200">
+        {label}
+      </label>
 
       <div className="input-box">
         <input
@@ -36,13 +38,13 @@ function Input({ value, onChange, label, placeholder, type }: InputProps) {
             {showPassword ? (
               <FaRegEye
                 size={22}
-                className="text-primary cursor-pointer"
+                className="text-primary dark:text-blue-300 cursor-pointer"
                 onClick={() => toggleShowPassword()}
               />
             ) : (
               <FaRegEyeSlash
                 size={22}
-                className="text-slate-400 cursor-pointer"
+                className="text-slate-400 dark:text-slate-200 cursor-pointer"
                 onClick={() => toggleShowPassword()}
               />
             )}

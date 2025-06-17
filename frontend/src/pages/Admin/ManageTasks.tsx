@@ -7,6 +7,7 @@ import { LuFileSpreadsheet } from "react-icons/lu";
 import TaskStatusTabs from "../../components/TaskStatusTabs";
 import TaskCard from "../../components/Cards/TaskCard";
 import toast from "react-hot-toast";
+import { Button } from "@/components/ui/button";
 
 interface Plan {
   _id: string;
@@ -123,12 +124,12 @@ function ManageTasks() {
   return (
     <DashboardLayout activeMenu="Задачи">
       <div className="my-5">
-        <button
+        <Button
           onClick={() => navigate("/admin/create-task")}
-          className="fixed bottom-6 right-6 z-50 bg-primary text-white px-5 py-3 rounded-full shadow-lg shadow-gray-400 hover:bg-blue-700 transition cursor-pointer"
+          className="fixed bottom-6 right-6 z-50 bg-primary text-white dark:text-black px-5 py-3 rounded-full shadow-lg dark:shadow-sm shadow-gray-400 dark:shadow-gray-600 hover:bg-blue-700 dark:hover:bg-gray-400 transition cursor-pointer"
         >
           + Создать задачу
-        </button>
+        </Button>
         <div className="flex flex-col lg:flex-row lg:items-center justify-between">
           <div className="flex items-center justify-between gap-3">
             <h2 className="text-xl md:text-xl font-medium">Задачи</h2>

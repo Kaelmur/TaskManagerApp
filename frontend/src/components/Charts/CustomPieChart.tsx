@@ -8,6 +8,7 @@ import {
 } from "recharts";
 import CustomTooltip from "./CustomTooltip";
 import CustomLegend from "./CustomLegend";
+import { useTheme } from "../theme-provider";
 
 interface PieData {
   status: string;
@@ -20,6 +21,10 @@ interface CustomPieChartProps {
 }
 
 const CustomPieChart: React.FC<CustomPieChartProps> = ({ data, colors }) => {
+  const { theme } = useTheme();
+
+  // Choose stroke color based on theme
+  const strokeColor = theme === "dark" ? "#333" : "#fff";
   return (
     <ResponsiveContainer width="100%" height={325}>
       <PieChart>
@@ -32,6 +37,7 @@ const CustomPieChart: React.FC<CustomPieChartProps> = ({ data, colors }) => {
           outerRadius={130}
           innerRadius={100}
           labelLine={false}
+          stroke={strokeColor}
         >
           {data.map((entry, index: number) => (
             <Cell key={`cell-${index}`} fill={colors[index % colors.length]} />

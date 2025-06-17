@@ -19,7 +19,9 @@ const getPlans = async (
 
     let plans;
 
-    plans = await Plan.find(filter).populate("tasks");
+    plans = await Plan.find(filter)
+      .populate("tasks")
+      .populate("assignedTo", "name profileImageUrl");
 
     const allPlans = await Plan.countDocuments({});
 
@@ -176,6 +178,8 @@ const updatePlan = async (
     plan.goal = req.body.goal || plan.goal;
     plan.completedAmount = req.body.completedAmount || plan.completedAmount;
 
+    let shouldUpdateTasks = false;
+
     if (req.body.assignedTo) {
       if (!Array.isArray(req.body.assignedTo)) {
         return res
@@ -184,8 +188,17 @@ const updatePlan = async (
       }
 
       plan.assignedTo = req.body.assignedTo;
+      shouldUpdateTasks = true;
 
       const updatedPlan = await plan.save();
+
+      if (shouldUpdateTasks) {
+        await Task.updateMany(
+          { planId: plan._id },
+          { assignedTo: plan.assignedTo }
+        );
+      }
+
       res.json({ message: "Plan updated successfully", updatedPlan });
     }
   } catch (err) {

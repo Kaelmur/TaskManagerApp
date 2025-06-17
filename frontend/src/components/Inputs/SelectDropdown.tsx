@@ -31,7 +31,7 @@ function SelectDropdown({
       {/* Dropdown Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full text-sm text-black outline-none bg-white border border-slate-100 px-2.5 py-3 rounded-md mt-2 flex justify-between items-center"
+        className="w-full text-sm text-black dark:text-white outline-none bg-white dark:bg-black border border-slate-100 dark:border-gray-800 px-2.5 py-3 rounded-md mt-2 flex justify-between items-center"
       >
         {value
           ? options.find((opt) => opt.value === value)?.label
@@ -47,12 +47,12 @@ function SelectDropdown({
 
       {/* Dropdown Menu */}
       {isOpen && (
-        <div className="absolute w-full bg-white border border-slate-100 rounded-md mt-1 shadow-md z-10">
+        <div className="absolute w-full bg-white dark:bg-black border border-slate-100 dark:border-gray-800 rounded-md mt-1 shadow-md z-10">
           {options.map((option) => (
             <div
               key={option.value}
               onClick={() => handleSelect(option.value)}
-              className="px-3 py-2 text-sm cursor-pointer hover:bg-gray-100"
+              className="px-3 py-2 text-sm cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800"
             >
               {option.label}
             </div>

@@ -1,6 +1,6 @@
 interface ProgressProps {
   progress: number;
-  status: "Active" | "Completed";
+  status: "Active" | "Completed" | string;
 }
 
 function Progress({ progress, status }: ProgressProps) {

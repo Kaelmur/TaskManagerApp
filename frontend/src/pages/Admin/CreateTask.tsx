@@ -309,7 +309,7 @@ function CreateTask() {
         ${
           loading
             ? "bg-gray-200 text-gray-500 cursor-not-allowed"
-            : "text-primary bg-blue-50 border-blue-100 hover:border-blue-300 cursor-pointer"
+            : "text-primary dark:text-blue-400 bg-blue-50 dark:bg-blue-100 border-blue-100 dark:border-blue-200 hover:border-blue-300 dark:hover:border-blue-500 cursor-pointer"
         }
       `}
                     onClick={() => downloadAttachments()}
@@ -329,7 +329,7 @@ function CreateTask() {
             </div>
 
             <div className="mt-4">
-              <label className="text-xs font-medium text-slate-600">
+              <label className="text-xs font-medium text-slate-600 dark:text-slate-300">
                 Название Задачи
               </label>
 
@@ -344,7 +344,7 @@ function CreateTask() {
             </div>
 
             <div className="mt-3">
-              <label className="text-xs font-medium text-slate-600">
+              <label className="text-xs font-medium text-slate-600 dark:text-slate-300">
                 Описание
               </label>
 
@@ -360,7 +360,9 @@ function CreateTask() {
             </div>
 
             <div className="mt-3">
-              <label className="text-xs font-medium text-slate-600">План</label>
+              <label className="text-xs font-medium text-slate-600 dark:text-slate-300">
+                План
+              </label>
               <select
                 className="form-input"
                 value={taskData.planId || ""}
@@ -379,7 +381,7 @@ function CreateTask() {
 
             <div className="grid grid-cols-12 gap-4 mt-2">
               <div className="col-span-6 md:col-span-4">
-                <label className="text-xs font-medium text-slate-600">
+                <label className="text-xs font-medium text-slate-600 dark:text-slate-300">
                   Приоритет
                 </label>
 
@@ -394,7 +396,7 @@ function CreateTask() {
               </div>
 
               <div className="col-span-6 md:col-span-4">
-                <label className="text-xs font-medium text-slate-600">
+                <label className="text-xs font-medium text-slate-600 dark:text-slate-300">
                   Дата окончания
                 </label>
 
@@ -410,7 +412,7 @@ function CreateTask() {
               </div>
 
               <div className="col-span-12 md:col-span-3">
-                <label className="text-xs font-medium text-slate-600">
+                <label className="text-xs font-medium text-slate-600 dark:text-slate-300">
                   Назначено
                 </label>
 
@@ -427,7 +429,7 @@ function CreateTask() {
             </div>
 
             <div className="mt-3">
-              <label className="text-xs font-medium text-slate-600">
+              <label className="text-xs font-medium text-slate-600 dark:text-slate-300">
                 Объем
               </label>
 
@@ -443,7 +445,7 @@ function CreateTask() {
             </div>
 
             <div className="mt-3">
-              <label className="text-xs font-medium text-slate-600">
+              <label className="text-xs font-medium text-slate-600 dark:text-slate-300">
                 Список работ
               </label>
 
@@ -457,7 +459,7 @@ function CreateTask() {
 
             {taskData.attachments?.length > 0 && (
               <div className="mt-6">
-                <label className="text-xs font-medium text-slate-500">
+                <label className="text-xs font-medium text-slate-500 dark:text-slate-300">
                   Вложения
                 </label>
                 {taskData.attachments.map((link, index) => (

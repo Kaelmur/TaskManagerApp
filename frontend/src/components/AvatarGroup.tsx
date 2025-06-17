@@ -14,7 +14,7 @@ function AvatarGroup({
           key={index}
           src={avatar || DEFAULT_AVATAR}
           alt={`Avatar ${index}`}
-          className="w-9 h-9 rounded-full border-2 border-white -ml-3 first:ml-0"
+          className="w-9 h-9 rounded-full border-2 border-white dark:border-black -ml-3 first:ml-0"
         />
       ))}
       {avatars.length > maxVisible && (

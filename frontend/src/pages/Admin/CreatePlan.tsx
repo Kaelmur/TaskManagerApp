@@ -144,6 +144,7 @@ function CreatePlan() {
 
     if (planId) {
       updatePlan();
+      navigate("/admin/plans");
       return;
     }
 

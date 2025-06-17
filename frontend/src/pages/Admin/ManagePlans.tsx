@@ -5,6 +5,7 @@ import { API_PATHS } from "../../utils/apiPath";
 import DashboardLayout from "../../components/DashboardLayout";
 import TaskStatusTabs from "../../components/TaskStatusTabs";
 import PlanCard from "../../components/Cards/PlanCard";
+import { Button } from "@/components/ui/button";
 
 interface User {
   profileImageUrl: string;
@@ -103,12 +104,12 @@ function ManagePlans() {
   return (
     <DashboardLayout activeMenu="Планы">
       <div className="my-5">
-        <button
+        <Button
           onClick={() => navigate("/admin/create-plan")}
-          className="fixed bottom-6 right-6 z-50 bg-primary text-white px-5 py-3 rounded-full shadow-lg shadow-gray-400 hover:bg-blue-700 transition cursor-pointer"
+          className="fixed bottom-6 right-6 z-50 bg-primary text-white dark:text-black px-5 py-3 rounded-full shadow-lg dark:shadow-sm shadow-gray-400 dark:shadow-gray-600 hover:bg-blue-700 dark:hover:bg-gray-400 transition cursor-pointer"
         >
           + Создать план
-        </button>
+        </Button>
         <div className="flex flex-col lg:flex-row lg:items-center justify-between">
           <div className="flex items-center justify-between gap-3">
             <h2 className="text-xl md:text-xl font-medium">Планы</h2>
@@ -152,7 +153,7 @@ function ManagePlans() {
               completedAmount={item.completedAmount}
               progress={item.progress}
               status={item.status}
-              assignedTo={item.assignedTo?.map((item) => item.profileImageUrl)}
+              assignedTo={item.assignedTo?.map((user) => user.profileImageUrl)}
               onClick={() => {
                 handleClick(item);
               }}

@@ -156,37 +156,45 @@ function Dashboard() {
           <InfoCard
             icon={<IoMdCard />}
             label="Задач"
-            value={addThousandsSeparator(
-              dashboardData?.charts?.taskDistribution?.All || 0
+            value={Number(
+              addThousandsSeparator(
+                dashboardData?.charts?.taskDistribution?.All || 0
+              )
             )}
-            color="bg-primary"
+            color="bg-primary dark:bg-blue-300"
           />
 
           <InfoCard
             icon={<></>}
             label="Ожидающих задач"
-            value={addThousandsSeparator(
-              dashboardData?.charts?.taskDistribution?.Pending || 0
+            value={Number(
+              addThousandsSeparator(
+                dashboardData?.charts?.taskDistribution?.Pending || 0
+              )
             )}
-            color="bg-violet-500"
+            color="bg-violet-500 dark:bg-violet-400"
           />
 
           <InfoCard
             icon={<></>}
             label="Задач в работе"
-            value={addThousandsSeparator(
-              dashboardData?.charts?.taskDistribution?.InProgress || 0
+            value={Number(
+              addThousandsSeparator(
+                dashboardData?.charts?.taskDistribution?.InProgress || 0
+              )
             )}
-            color="bg-cyan-500"
+            color="bg-cyan-500 dark:bg-cyan-400"
           />
 
           <InfoCard
             icon={<></>}
             label="Законченные задачи"
-            value={addThousandsSeparator(
-              dashboardData?.charts?.taskDistribution?.Completed || 0
+            value={Number(
+              addThousandsSeparator(
+                dashboardData?.charts?.taskDistribution?.Completed || 0
+              )
             )}
-            color="bg-lime-500"
+            color="bg-lime-500 dark:bg-lime-400"
           />
         </div>
       </div>

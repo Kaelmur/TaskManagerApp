@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { HiOutlineMenu, HiOutlineX } from "react-icons/hi";
 import SideMenu from "./SideMenu";
 import { gsap } from "gsap";
+import { ModeToggle } from "./mode-toggle";
 
 function Navbar({
   activeMenu,
@@ -57,9 +58,9 @@ function Navbar({
   }, [openSideMenu]);
 
   return (
-    <div className="flex gap-5 bg-white border border-b border-gray-200/50 backdrop-blur-[2px] py-4 px-7 sticky top-0 z-30">
+    <div className="flex items-center justify-between gap-5 bg-white dark:bg-black border border-b border-gray-200/50 dark:border-gray-600/50 backdrop-blur-[2px] py-4 px-7 sticky top-0 z-30">
       <button
-        className="block lg:hidden text-black"
+        className="block lg:hidden text-black dark:text-white"
         onClick={() => {
           setOpenSideMenu(!openSideMenu);
         }}
@@ -71,7 +72,11 @@ function Navbar({
         )}
       </button>
 
-      <h2 className="text-lg font-medium text-black">Task Manager</h2>
+      <h2 className="text-lg font-medium text-black dark:text-white">
+        Task Manager
+      </h2>
+
+      <ModeToggle />
 
       <div
         ref={sideMenuRef}
