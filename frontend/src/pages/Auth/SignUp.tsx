@@ -31,17 +31,17 @@ function SignUp() {
     let profileImageUrl = "";
 
     if (!fullName) {
-      setError("Please enter full name.");
+      setError("Пожалуйста, введите полное имя.");
       return;
     }
 
     if (!validateEmail(email)) {
-      setError("Please enter a valid email address.");
+      setError("Пожалуйста, введите действительный адрес электронной почты.");
       return;
     }
 
     if (!password) {
-      setError("Please enter the password");
+      setError("Пожалуйста, введите пароль.");
       return;
     }
 

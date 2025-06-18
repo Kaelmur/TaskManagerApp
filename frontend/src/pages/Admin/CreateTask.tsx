@@ -153,25 +153,25 @@ function CreateTask() {
 
     // Input validation
     if (!taskData.title.trim()) {
-      setError("Title is required.");
+      setError("Требуется название.");
       return;
     }
     if (!taskData.description.trim()) {
-      setError("Description is required.");
+      setError("Требуется описание.");
       return;
     }
     if (!taskData.dueDate) {
-      setError("Due Date is required.");
+      setError("Требуется дата окончания.");
       return;
     }
 
     if (taskData.assignedTo?.length === 0) {
-      setError("Task not assigned to any member.");
+      setError("Задача, не назначена ни одному участнику.");
       return;
     }
 
     if (taskData.todoChecklist?.length === 0) {
-      setError("Add atleast one todo task");
+      setError("Добавьте хотя бы одно задание для выполнения.");
       return;
     }
 
@@ -281,7 +281,7 @@ function CreateTask() {
           : [];
         setPlans(planArray);
       } catch (err) {
-        console.error("fetch plans", err);
+        console.error("Ошибка при получении планов", err);
         setPlans([]);
       }
     };

@@ -21,12 +21,12 @@ function Login() {
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!validateEmail(email)) {
-      setError("Please enter a valid email address.");
+      setError("Пожалуйста, введите действительный адрес электронной почты.");
       return;
     }
 
     if (!password) {
-      setError("Please enter the password");
+      setError("Пожалуйста, введите пароль.");
       return;
     }
 

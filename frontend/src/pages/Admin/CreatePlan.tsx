@@ -120,25 +120,25 @@ function CreatePlan() {
 
     // Input validation
     if (!planData.name.trim()) {
-      setError("Name is required.");
+      setError("Требуется указать название.");
       return;
     }
     if (!planData.goal) {
-      setError("Goal is required.");
+      setError("Требуется указать цель.");
       return;
     }
     if (!planData.startDate) {
-      setError("Start Date is required.");
+      setError("Дата начала обязательна.");
       return;
     }
 
     if (!planData.endDate) {
-      setError("End Date is required.");
+      setError("Дата окончания обязательна.");
       return;
     }
 
     if (planData.assignedTo?.length === 0) {
-      setError("Task not assigned to any member.");
+      setError("Задача, не назначена ни одному участнику.");
       return;
     }
 
