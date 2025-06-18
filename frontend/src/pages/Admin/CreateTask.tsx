@@ -101,11 +101,12 @@ function CreateTask() {
         todoChecklist: taskData.todoChecklist,
       });
 
-      toast.success("Task Created Successfully");
+      toast.success("Задача успешно создана");
+      navigate("/admin/tasks");
 
       clearData();
     } catch (error) {
-      console.error("Error creating task:", error);
+      console.error("Ошибка при создании Задачи:", error);
       setLoading(false);
     } finally {
       setLoading(false);
