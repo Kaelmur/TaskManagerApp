@@ -265,8 +265,8 @@ function CreateTask() {
       link.remove();
       URL.revokeObjectURL(url);
     } catch (err) {
-      console.error("Download error", err);
-      toast.error("Failed to download attachments");
+      console.error("Ошибка загрузки", err);
+      toast.error("Не удалось загрузить вложения");
     } finally {
       setLoading(false);
     }
@@ -281,7 +281,7 @@ function CreateTask() {
           : [];
         setPlans(planArray);
       } catch (err) {
-        console.error("Failed to fetch plans", err);
+        console.error("fetch plans", err);
         setPlans([]);
       }
     };

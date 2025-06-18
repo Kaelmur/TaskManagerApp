@@ -51,7 +51,7 @@ function ManageUsers() {
       window.URL.revokeObjectURL(url);
     } catch (error) {
       console.error("Error downloading expense details:", error);
-      toast.error("Failed to download expense details. Please try again.");
+      toast.error("Ошибка при загрузке деталей о пользователях.");
     }
   };
 
