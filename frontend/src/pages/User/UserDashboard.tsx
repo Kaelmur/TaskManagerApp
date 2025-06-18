@@ -156,7 +156,7 @@ function UserDashboard() {
             icon={<IoMdCard />}
             label="Задач"
             value={dashboardData?.charts?.taskDistribution?.All || 0}
-            color="bg-primary"
+            color="bg-primary dark:bg-blue-300"
           />
 
           <InfoCard

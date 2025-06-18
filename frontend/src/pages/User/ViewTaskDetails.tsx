@@ -29,13 +29,13 @@ function ViewTaskDetails() {
   const getStatusTagColor = (status: Status) => {
     switch (status) {
       case "In Progress":
-        return "text-cyan-500 bg-cyan-50 border border-cyan-500/10";
+        return "text-cyan-500 bg-cyan-50 dark:bg-cyan-10 border border-cyan-500/10 dark:border-cyan-400/10";
 
       case "Completed":
-        return "text-lime-500 bg-lime-50 border border-lime-500/20";
+        return "text-lime-500 dark:text-lime-600 bg-lime-50 dark:bg-lime-20 border border-lime-500/10";
 
       default:
-        return "text-violet-500 bg-violet-50 border border-violet-500/10";
+        return "text-violet-500 dark:text-violet-600 bg-violet-50 dark:bg-violet-20 border border-violet-500/10";
     }
   };
 
@@ -139,7 +139,7 @@ function ViewTaskDetails() {
                   />
                 </div>
                 <div className="col-span-6 md:col-span-4">
-                  <label className="text-xs font-medium text-slate-500">
+                  <label className="text-xs font-medium text-slate-500 dark:text-slate-200">
                     Назначено
                   </label>
 
@@ -154,7 +154,7 @@ function ViewTaskDetails() {
               </div>
 
               <div className="mt-2">
-                <label className="text-xs font-medium text-slate-500">
+                <label className="text-xs font-medium text-slate-500 dark:text-slate-200">
                   Список работ
                 </label>
 
@@ -176,7 +176,7 @@ function ViewTaskDetails() {
 
               {task.attachments?.length > 0 && (
                 <div className="mt-6">
-                  <label className="text-xs font-medium text-slate-500">
+                  <label className="text-xs font-medium text-slate-500 dark:text-slate-200">
                     Вложения
                   </label>
                   {task.attachments.map((link, index) => (
@@ -202,9 +202,11 @@ interface InfoBoxProps {
 const InfoBox = ({ label, value }: InfoBoxProps) => {
   return (
     <>
-      <label className="text-xs font-medium text-slate-500">{label}</label>
+      <label className="text-xs font-medium text-slate-500 dark:text-slate-200">
+        {label}
+      </label>
 
-      <p className="text-[12px] md:text-[13px] font-medium text-gray-700 mt-0.5">
+      <p className="text-[12px] md:text-[13px] font-medium text-gray-700 dark:text-gray-400 mt-0.5">
         {value}
       </p>
     </>
@@ -228,7 +230,7 @@ const TodoCheckList = ({ text, isChecked, onChange }: TodoCheckListProps) => {
         className="w-4 h-4 text-primary bg-gray-100 border-gray-300 rounded-sm outline-none cursor-pointer"
       />
 
-      <p className="text-[13px] text-gray-800">{text}</p>
+      <p className="text-[13px] text-gray-800 dark:text-gray-300">{text}</p>
     </div>
   );
 };

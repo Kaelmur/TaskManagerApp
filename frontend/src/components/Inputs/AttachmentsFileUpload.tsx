@@ -60,8 +60,8 @@ const AttachmentsFileUpload: React.FC<AttachmentsFileUploadProps> = ({
   };
 
   return (
-    <div className="p-6 bg-white shadow rounded-xl w-full max-w-2xl mx-auto">
-      <p className="mb-4 text-lg font-medium text-gray-700 text-center">
+    <div className="p-6 bg-white dark:bg-dark shadow dark:shadow-gray-700 rounded-xl w-full max-w-2xl mx-auto">
+      <p className="mb-4 text-lg font-medium text-gray-700 dark:text-gray-200 text-center">
         Загрузить вложения
       </p>
 
@@ -69,7 +69,7 @@ const AttachmentsFileUpload: React.FC<AttachmentsFileUploadProps> = ({
         <button
           type="button"
           onClick={() => fileInputRef.current?.click()}
-          className="px-5 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400"
+          className="px-5 py-2 bg-blue-600 dark:bg-blue-400 text-white rounded-lg hover:bg-blue-700 dark:hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-400"
         >
           Выбрать файл
         </button>
@@ -77,7 +77,7 @@ const AttachmentsFileUpload: React.FC<AttachmentsFileUploadProps> = ({
         <button
           type="button"
           onClick={handleUpload}
-          className="px-5 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-400"
+          className="px-5 py-2 bg-green-600 dark:bg-green-500 text-white rounded-lg hover:bg-green-700 dark:hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-400"
         >
           Отправить
         </button>
@@ -114,7 +114,9 @@ const AttachmentsFileUpload: React.FC<AttachmentsFileUploadProps> = ({
       )}
 
       {uploadStatus && (
-        <p className="mt-4 text-sm text-center text-gray-500">{uploadStatus}</p>
+        <p className="mt-4 text-sm text-center text-gray-500 dark:text-gray-300">
+          {uploadStatus}
+        </p>
       )}
     </div>
   );

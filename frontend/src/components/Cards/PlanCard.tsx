@@ -56,7 +56,7 @@ function PlanCard({
 
   return (
     <div
-      className="bg-white dark:bg-darksecondary rounded-xl py-4 shadow-md dark:shadow-xs shadow-gray-100 dark:shadow-gray-500 border border-gray-200/50 dark:border-gray-700/50 cursor-pointer"
+      className="bg-white dark:bg-darksecondary rounded-xl py-4 shadow-md dark:shadow-xs shadow-gray-100 dark:shadow-gray-500 border border-gray-200/50 dark:border-gray-700/50 hover:border-gray-500/50 dark:hover:border-gray-300/50 cursor-pointer"
       onClick={onClick}
     >
       <div className="flex items-end gap-3 px-4">

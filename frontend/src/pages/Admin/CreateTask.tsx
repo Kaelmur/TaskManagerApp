@@ -402,7 +402,7 @@ function CreateTask() {
 
                 <input
                   placeholder="Create App UI"
-                  className="form-input"
+                  className="form-input custom-date"
                   value={taskData.dueDate ? String(taskData.dueDate) : ""}
                   onChange={({ target }) =>
                     handleValueChange("dueDate", target.value)
