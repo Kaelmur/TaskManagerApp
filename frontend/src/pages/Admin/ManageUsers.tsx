@@ -5,6 +5,7 @@ import { API_PATHS } from "../../utils/apiPath";
 import { LuFileSpreadsheet } from "react-icons/lu";
 import UserCard from "../../components/Cards/UserCard";
 import toast from "react-hot-toast";
+import Spinner from "@/components/Spinner";
 
 interface User {
   _id: string;
@@ -21,8 +22,10 @@ interface User {
 
 function ManageUsers() {
   const [allUsers, setAllUsers] = useState<User[]>([]);
+  const [loading, setLoading] = useState(false);
 
   const getAllUsers = async () => {
+    setLoading(true);
     try {
       const response = await axiosInstance.get(API_PATHS.USERS.GET_ALL_USERS);
       if (response.data?.length > 0) {
@@ -30,6 +33,8 @@ function ManageUsers() {
       }
     } catch (error) {
       console.error("Error fetching users", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -76,11 +81,17 @@ function ManageUsers() {
           </button>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
-          {allUsers?.map((user) => (
-            <UserCard key={user._id} userInfo={user} />
-          ))}
-        </div>
+        {loading ? (
+          <div className="flex justify-center items-center min-h-[200px] w-full">
+            <Spinner />
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+            {allUsers?.map((user) => (
+              <UserCard key={user._id} userInfo={user} />
+            ))}
+          </div>
+        )}
       </div>
     </DashboardLayout>
   );
