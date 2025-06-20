@@ -6,6 +6,7 @@ import DashboardLayout from "../../components/DashboardLayout";
 import TaskStatusTabs from "../../components/TaskStatusTabs";
 import PlanCard from "../../components/Cards/PlanCard";
 import { Button } from "@/components/ui/button";
+import Spinner from "@/components/Spinner";
 
 interface User {
   profileImageUrl: string;
@@ -30,6 +31,7 @@ interface StatusTab {
 
 function ManagePlans() {
   const [allPlans, setAllPlans] = useState<Plan[]>([]);
+  const [loading, setLoading] = useState(false);
 
   const [tabs, setTabs] = useState<StatusTab[]>([]);
   const [filterStatus, setFilterStatus] = useState("Все");
@@ -37,6 +39,8 @@ function ManagePlans() {
   const navigate = useNavigate();
 
   const getAllPlans = async (status: string) => {
+    setLoading(true);
+
     try {
       let apiStatus = "";
       switch (status) {
@@ -68,6 +72,8 @@ function ManagePlans() {
       setTabs(statusArray);
     } catch (error) {
       console.error("Error fetching plans:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -142,24 +148,30 @@ function ManagePlans() {
           )}
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
-          {allPlans?.map((item) => (
-            <PlanCard
-              key={item._id}
-              name={item.name}
-              goal={item.goal}
-              startDate={item.startDate}
-              endDate={item.endDate}
-              completedAmount={item.completedAmount}
-              progress={item.progress}
-              status={item.status}
-              assignedTo={item.assignedTo?.map((user) => user.profileImageUrl)}
-              onClick={() => {
-                handleClick(item);
-              }}
-            />
-          ))}
-        </div>
+        {loading ? (
+          <Spinner />
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+            {allPlans?.map((item) => (
+              <PlanCard
+                key={item._id}
+                name={item.name}
+                goal={item.goal}
+                startDate={item.startDate}
+                endDate={item.endDate}
+                completedAmount={item.completedAmount}
+                progress={item.progress}
+                status={item.status}
+                assignedTo={item.assignedTo?.map(
+                  (user) => user.profileImageUrl
+                )}
+                onClick={() => {
+                  handleClick(item);
+                }}
+              />
+            ))}
+          </div>
+        )}
       </div>
     </DashboardLayout>
   );

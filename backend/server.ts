@@ -22,7 +22,8 @@ const app: Application = express();
 // Middleware to handle CORS
 app.use(
   cors({
-    origin: process.env.CLIENT_URL || "https://taskmanager-orx3.onrender.com",
+    origin:
+      process.env.CLIENT_URL || "https://taskmanagerappfront.onrender.com",
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
