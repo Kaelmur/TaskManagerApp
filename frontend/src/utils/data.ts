@@ -2,7 +2,6 @@ import {
   LuLayoutDashboard,
   LuUsers,
   LuClipboardCheck,
-  LuSquarePlus,
   LuLogOut,
   LuSquareCheckBig,
 } from "react-icons/lu";
