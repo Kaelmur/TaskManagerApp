@@ -1,7 +1,12 @@
 import { useRef, useState } from "react";
 import { LuUser, LuUpload, LuTrash } from "react-icons/lu";
 
-function ProfilePhotoSelector({ image, setImage }) {
+interface ProfilePhotoSelectorProps {
+  image: File | null;
+  setImage: (file: File | null) => void;
+}
+
+function ProfilePhotoSelector({ image, setImage }: ProfilePhotoSelectorProps) {
   const inputRef = useRef<HTMLInputElement | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 

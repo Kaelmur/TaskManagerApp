@@ -39,7 +39,7 @@ const CustomPieChart: React.FC<CustomPieChartProps> = ({ data, colors }) => {
           labelLine={false}
           stroke={strokeColor}
         >
-          {data.map((entry, index: number) => (
+          {data.map((_, index: number) => (
             <Cell key={`cell-${index}`} fill={colors[index % colors.length]} />
           ))}
         </Pie>

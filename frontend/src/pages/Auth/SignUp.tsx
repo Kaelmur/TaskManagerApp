@@ -11,7 +11,7 @@ import { UserContext } from "../../context/userContext";
 import uploadImage from "../../utils/uploadImage";
 
 function SignUp() {
-  const [profilePic, setProfilePic] = useState(null);
+  const [profilePic, setProfilePic] = useState<File | null>(null);
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
