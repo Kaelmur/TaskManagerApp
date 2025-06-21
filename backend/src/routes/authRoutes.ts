@@ -8,6 +8,8 @@ import {
 import { protect } from "../middlewares/authMiddleware";
 import { upload } from "../middlewares/uploadMiddleware";
 import { Request, Response } from "express";
+import cloudinary from "../../utils/cloudinary";
+import fs from "fs";
 
 const router = Router();
 
@@ -20,15 +22,27 @@ router.put("/profile", protect, updateUserProfile); // Update User Profile
 router.post(
   "/upload-image",
   upload.single("image"),
-  (req: Request, res: Response): void => {
+  async (req: Request, res: Response) => {
     if (!req.file) {
       res.status(400).json({ message: "No file uploaded" });
       return;
     }
-    const imageUrl = `${req.protocol}://${req.get("host")}/uploads/${
-      req.file.filename
-    }`;
-    res.status(200).json({ imageUrl });
+
+    try {
+      const result = await cloudinary.uploader.upload(req.file.path, {
+        folder: "uploads",
+        resource_type: "image",
+      });
+
+      fs.unlink(req.file.path, (err) => {
+        if (err) console.error("Failed to delete local file:", err);
+      });
+
+      res.status(200).json({ imageUrl: result.secure_url });
+    } catch (error) {
+      console.error("Upload to Cloudinary failed:", error);
+      res.status(500).json({ message: "Cloudinary upload failed" });
+    }
   }
 );
 
