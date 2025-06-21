@@ -29,16 +29,19 @@ router.post(
     }
 
     try {
-      const result = await cloudinary.uploader.upload(req.file.path, {
-        folder: "uploads",
-        resource_type: "image",
-      });
-
-      fs.unlink(req.file.path, (err) => {
-        if (err) console.error("Failed to delete local file:", err);
-      });
-
-      res.status(200).json({ imageUrl: result.secure_url });
+      const result = await cloudinary.uploader
+        .upload_stream(
+          {
+            folder: "uploads",
+            resource_type: "image",
+          },
+          (error, result) => {
+            if (error)
+              return res.status(500).json({ message: "Upload failed" });
+            res.status(200).json({ imageUrl: result?.secure_url });
+          }
+        )
+        .end(req.file.buffer);
     } catch (error) {
       console.error("Upload to Cloudinary failed:", error);
       res.status(500).json({ message: "Cloudinary upload failed" });

@@ -1,6 +1,6 @@
 import muler from "multer";
 import { Request, Response, NextFunction } from "express";
-import { FileFilterCallback } from "multer";
+import multer, { FileFilterCallback } from "multer";
 import path from "path";
 import cloudinary from "../../utils/cloudinary";
 import fs from "fs";
@@ -13,14 +13,15 @@ type CloudinaryFile = Express.Multer.File & {
 };
 
 // Configure storage
-const storage = muler.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, "uploads/");
-  },
-  filename: (req, file, cb) => {
-    cb(null, `${Date.now()}-${file.originalname}`);
-  },
-});
+// const storage = muler.diskStorage({
+//   destination: (req, file, cb) => {
+//     cb(null, "uploads/");
+//   },
+//   filename: (req, file, cb) => {
+//     cb(null, `${Date.now()}-${file.originalname}`);
+//   },
+// });
+const storage = multer.memoryStorage();
 
 // File filter for avatars
 const fileFilter = (req: Request, file: MulterFile, cb: FileFilterCallback) => {
