@@ -151,7 +151,7 @@ function Dashboard() {
           <Spinner />
         </div>
       ) : (
-        <>
+        <div>
           <div className="card my-5">
             <div>
               <div className="col-span-3">
@@ -247,7 +247,7 @@ function Dashboard() {
               </div>
             </div>
           </div>
-        </>
+        </div>
       )}
     </DashboardLayout>
   );
