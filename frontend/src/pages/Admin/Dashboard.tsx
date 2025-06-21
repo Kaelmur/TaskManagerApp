@@ -142,7 +142,7 @@ function Dashboard() {
 
   useEffect(() => {
     getDashboardData();
-  });
+  }, []);
 
   return (
     <DashboardLayout activeMenu="Главная">
