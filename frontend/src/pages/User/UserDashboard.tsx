@@ -12,6 +12,7 @@ import { LuArrowRight } from "react-icons/lu";
 import TaskListTable from "../../components/TaskListTable";
 import CustomPieChart from "../../components/Charts/CustomPieChart";
 import CustomBarChart from "../../components/Charts/CustomBarChart";
+import Spinner from "@/components/Spinner";
 
 const COLORS = ["#8D51FF", "#00B8DB", "#7BCE00"];
 
@@ -80,6 +81,8 @@ function UserDashboard() {
   const [pieChartData, setPieChartData] = useState<PieChartDatum[]>([]);
   const [barChartData, setBarChartData] = useState<BarChartDatum[]>([]);
 
+  const [loading, setLoading] = useState(false);
+
   const date = moment().format("dddd Do MMM YYYY");
 
   // Prepare Chart Data
@@ -114,6 +117,7 @@ function UserDashboard() {
   };
 
   const getDashboardData = async () => {
+    setLoading(true);
     try {
       const response = await axiosInstance.get(
         API_PATHS.TASKS.GET_USER_DASHBOARD_DATA
@@ -124,6 +128,8 @@ function UserDashboard() {
       }
     } catch (error) {
       console.error("Error fetching users:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -139,83 +145,91 @@ function UserDashboard() {
 
   return (
     <DashboardLayout activeMenu="Главная">
-      <div className="card my-5">
-        <div>
-          <div className="col-span-3">
-            <h2 className="text-xl md:text-2xl">
-              Добро пожаловать, {user?.name}!
-            </h2>
-            <p className="text-xs md:text-[13px] text-gray-400 mt-1.5">
-              {date.charAt(0).toUpperCase() + date.slice(1)}
-            </p>
-          </div>
+      {loading ? (
+        <div className="flex justify-center items-center min-h-[200px] w-full">
+          <Spinner />
         </div>
-
-        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-3 md:gap-6 mt-5">
-          <InfoCard
-            icon={<IoMdCard />}
-            label="Задач"
-            value={dashboardData?.charts?.taskDistribution?.All || 0}
-            color="bg-primary dark:bg-blue-300"
-          />
-
-          <InfoCard
-            icon={<></>}
-            label="Ожидающих задач"
-            value={dashboardData?.charts?.taskDistribution?.Pending || 0}
-            color="bg-violet-500"
-          />
-
-          <InfoCard
-            icon={<></>}
-            label="Задач в работе"
-            value={dashboardData?.charts?.taskDistribution?.InProgress || 0}
-            color="bg-cyan-500"
-          />
-
-          <InfoCard
-            icon={<></>}
-            label="Законченные задачи"
-            value={dashboardData?.charts?.taskDistribution?.Completed || 0}
-            color="bg-lime-500"
-          />
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 my-4 md:my-6">
-        <div className="md:col-span-2">
-          <div className="card">
-            <div className="flex items-center justify-between">
-              <h5 className="text-lg">Недавние задачи</h5>
-
-              <button className="card-btn" onClick={onSeeMore}>
-                Все задачи <LuArrowRight className="text-base" />
-              </button>
+      ) : (
+        <>
+          <div className="card my-5">
+            <div>
+              <div className="col-span-3">
+                <h2 className="text-xl md:text-2xl">
+                  Добро пожаловать, {user?.name}!
+                </h2>
+                <p className="text-xs md:text-[13px] text-gray-400 mt-1.5">
+                  {date.charAt(0).toUpperCase() + date.slice(1)}
+                </p>
+              </div>
             </div>
 
-            <TaskListTable tableData={dashboardData?.recentTasks || []} />
+            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-3 md:gap-6 mt-5">
+              <InfoCard
+                icon={<IoMdCard />}
+                label="Задач"
+                value={dashboardData?.charts?.taskDistribution?.All || 0}
+                color="bg-primary dark:bg-blue-300"
+              />
+
+              <InfoCard
+                icon={<></>}
+                label="Ожидающих задач"
+                value={dashboardData?.charts?.taskDistribution?.Pending || 0}
+                color="bg-violet-500"
+              />
+
+              <InfoCard
+                icon={<></>}
+                label="Задач в работе"
+                value={dashboardData?.charts?.taskDistribution?.InProgress || 0}
+                color="bg-cyan-500"
+              />
+
+              <InfoCard
+                icon={<></>}
+                label="Законченные задачи"
+                value={dashboardData?.charts?.taskDistribution?.Completed || 0}
+                color="bg-lime-500"
+              />
+            </div>
           </div>
-        </div>
-        <div>
-          <div className="card">
-            <div className="flex items-center justify-between">
-              <h5 className="font-medium">Распределение задач</h5>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 my-4 md:my-6">
+            <div className="md:col-span-2">
+              <div className="card">
+                <div className="flex items-center justify-between">
+                  <h5 className="text-lg">Недавние задачи</h5>
+
+                  <button className="card-btn" onClick={onSeeMore}>
+                    Все задачи <LuArrowRight className="text-base" />
+                  </button>
+                </div>
+
+                <TaskListTable tableData={dashboardData?.recentTasks || []} />
+              </div>
+            </div>
+            <div>
+              <div className="card">
+                <div className="flex items-center justify-between">
+                  <h5 className="font-medium">Распределение задач</h5>
+                </div>
+
+                <CustomPieChart data={pieChartData} colors={COLORS} />
+              </div>
             </div>
 
-            <CustomPieChart data={pieChartData} colors={COLORS} />
-          </div>
-        </div>
+            <div>
+              <div className="card">
+                <div className="flex items-center justify-between">
+                  <h5 className="font-medium">Уровни приоритета задач</h5>
+                </div>
 
-        <div>
-          <div className="card">
-            <div className="flex items-center justify-between">
-              <h5 className="font-medium">Уровни приоритета задач</h5>
+                <CustomBarChart data={barChartData} />
+              </div>
             </div>
-
-            <CustomBarChart data={barChartData} />
           </div>
-        </div>
-      </div>
+        </>
+      )}
     </DashboardLayout>
   );
 }

@@ -16,6 +16,7 @@ function SignUp() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [adminInviteToken, setAdminInviteToken] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const [error, setError] = useState<string | null>(null);
 
@@ -46,6 +47,7 @@ function SignUp() {
     }
 
     setError("");
+    setIsLoading(true);
 
     // SignUp API Call
     try {
@@ -82,6 +84,8 @@ function SignUp() {
       } else {
         setError("Something went wrong. Please try again.");
       }
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -142,8 +146,8 @@ function SignUp() {
 
           {error && <p className="text-red-500 text-xs pb-2.5">{error}</p>}
 
-          <button type="submit" className="btn-primary">
-            Зарегистрироваться
+          <button type="submit" className="btn-primary" disabled={isLoading}>
+            {isLoading ? "Загрузка..." : "Зарегистрироваться"}
           </button>
 
           <p className="text-[13px] text-slate-800 dark:text-slate-400 mt-3">
