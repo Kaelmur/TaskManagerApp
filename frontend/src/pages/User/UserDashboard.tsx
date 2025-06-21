@@ -141,7 +141,7 @@ function UserDashboard() {
     getDashboardData();
 
     return () => {};
-  });
+  }, []);
 
   return (
     <DashboardLayout activeMenu="Главная">
